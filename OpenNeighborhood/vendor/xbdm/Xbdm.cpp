@@ -1,4 +1,4 @@
-#include "xbdm.h"
+#include "Xbdm.h"
 
 using namespace std;
 using namespace XBDM;
