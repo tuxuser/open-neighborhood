@@ -1,5 +1,5 @@
 workspace "OpenNeighborhood"
-	architecture "x86"
+	architecture "x86_64"
 	startproject "OpenNeighborhood"
 
 	configurations {
