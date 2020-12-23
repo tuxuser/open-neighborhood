@@ -1,6 +1,12 @@
 #include "pch.h"
 
+#include "Core/App.h"
+
 int main()
 {
-	return 0;
+	auto app = new App();
+
+	app->Run();
+
+	delete app;
 }
