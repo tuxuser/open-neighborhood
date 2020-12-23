@@ -16,6 +16,7 @@ project "OpenNeighborhood"
 	}
 
 	includedirs {
+		"src",
 		"%{IncludeDir.xbdm}",
 		"%{IncludeDir.GLFW}"
 	}

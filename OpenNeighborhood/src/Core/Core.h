@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PlatformDetector.h"
+#include "Core/PlatformDetector.h"
 
 #ifdef DEBUG
 	#if defined(PLATFORM_WINDOWS)
