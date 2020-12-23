@@ -19,7 +19,8 @@ project "OpenNeighborhood"
 		"src",
 		"%{IncludeDir.xbdm}",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	defines {
@@ -31,6 +32,7 @@ project "OpenNeighborhood"
 	links {
 		"GLFW",
 		"Glad",
+		"ImGui",
 		"xbdm"
 	}
 
