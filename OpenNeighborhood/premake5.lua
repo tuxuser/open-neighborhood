@@ -16,16 +16,21 @@ project "OpenNeighborhood"
 	}
 
 	includedirs {
-		"%{IncludeDir.xbdm}"
+		"%{IncludeDir.xbdm}",
+		"%{IncludeDir.GLFW}"
 	}
 
+	linkgroups "on"
+
 	links {
+		"GLFW",
 		"xbdm"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 		links {
+			"opengl32.lib",
 			"kernel32.lib",
 			"user32.lib",
 			"gdi32.lib",
