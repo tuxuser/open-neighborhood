@@ -14,6 +14,18 @@ App::App(const std::string& name)
 
 App::~App() {}
 
+void App::PushLayer(Layer* layer)
+{
+	m_LayerStack.PushLayer(layer);
+	layer->OnAttach();
+}
+
+void App::PushOverlay(Layer* layer)
+{
+	m_LayerStack.PushOverlay(layer);
+	layer->OnAttach();
+}
+
 void App::Close()
 {
 	m_Running = false;
@@ -23,6 +35,11 @@ void App::Run()
 {
 	while (m_Running)
 	{
+		Timestep ts;
+
+		for (Layer* layer : m_LayerStack)
+			layer->OnUpdate(ts);
+
 		m_Window->OnUpdate();
 	}
 }
@@ -31,6 +48,13 @@ void App::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClose));
+
+	for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+	{
+		(*--it)->OnEvent(e);
+		if (e.m_Handled)
+			break;
+	}
 }
 
 bool App::OnWindowClose(WindowCloseEvent& e)

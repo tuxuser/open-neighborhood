@@ -1,10 +1,10 @@
 #include "pch.h"
 
-#include "Core/App.h"
+#include "OpenNeighborhoodApp.h"
 
 int main()
 {
-	auto app = new App();
+	auto app = new OpenNeighborhoodApp();
 
 	app->Run();
 
