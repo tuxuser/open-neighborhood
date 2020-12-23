@@ -41,9 +41,11 @@ project "OpenNeighborhood"
 		}
 
 	filter "configurations:Debug"
+		defines "DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		runtime "Release"
+		defines "RELEASE"
 		optimize "on"
