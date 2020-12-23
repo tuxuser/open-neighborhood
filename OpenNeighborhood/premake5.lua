@@ -18,13 +18,19 @@ project "OpenNeighborhood"
 	includedirs {
 		"src",
 		"%{IncludeDir.xbdm}",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
+	}
+
+	defines {
+		"GLFW_INCLUDE_NONE"
 	}
 
 	linkgroups "on"
 
 	links {
 		"GLFW",
+		"Glad",
 		"xbdm"
 	}
 
