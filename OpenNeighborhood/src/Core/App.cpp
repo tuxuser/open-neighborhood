@@ -20,12 +20,6 @@ void App::PushLayer(Layer* layer)
 	layer->OnAttach();
 }
 
-void App::PushOverlay(Layer* layer)
-{
-	m_LayerStack.PushOverlay(layer);
-	layer->OnAttach();
-}
-
 void App::Close()
 {
 	m_Running = false;

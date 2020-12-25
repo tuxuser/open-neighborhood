@@ -17,7 +17,6 @@ public:
 	void OnEvent(Event&);
 
 	void PushLayer(Layer* layer);
-	void PushOverlay(Layer* overlay);
 
 	inline static App& Get() { return *s_Instance; }
 	inline Window& GetWindow() { return *m_Window; }
