@@ -1,37 +1,31 @@
-project "xbdm"
+project "XBDM"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++14"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "pch.h"
+	pchsource "src/pch.cpp"
+
 	files {
-		"**.h",
-		"**.cpp"
+		"src/**.h",
+		"src/**.cpp",
+		"vendor/**.h",
+		"vendor/**.cpp"
+	}
+
+	includedirs {
+		"src",
+		"vendor/dirent"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 		links {
-			"Ws2_32.lib",
-			"kernel32.lib",
-			"user32.lib",
-			"gdi32.lib",
-			"winspool.lib",
-			"comdlg32.lib",
-			"advapi32.lib",
-			"shell32.lib",
-			"ole32.lib",
-			"oleaut32.lib",
-			"uuid.lib",
-			"odbc32.lib",
-			"odbccp32.lib"
-		}
-		
-		defines {
-			"__WIN32" -- XBDM uses __WIN32 instead of WIN32 to detect Windows
+			"Ws2_32.lib"
 		}
 
 	filter "configurations:Debug"

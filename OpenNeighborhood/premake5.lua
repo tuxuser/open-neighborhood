@@ -17,7 +17,7 @@ project "OpenNeighborhood"
 
 	includedirs {
 		"src",
-		"%{IncludeDir.xbdm}",
+		"%{wks.location}/XBDM/src",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}"
@@ -33,25 +33,13 @@ project "OpenNeighborhood"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"xbdm"
+		"XBDM"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 		links {
-			"opengl32.lib",
-			"kernel32.lib",
-			"user32.lib",
-			"gdi32.lib",
-			"winspool.lib",
-			"comdlg32.lib",
-			"advapi32.lib",
-			"shell32.lib",
-			"ole32.lib",
-			"oleaut32.lib",
-			"uuid.lib",
-			"odbc32.lib",
-			"odbccp32.lib"
+			"opengl32.lib"
 		}
 
 	filter "configurations:Debug"
