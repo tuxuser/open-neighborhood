@@ -143,6 +143,37 @@ namespace XBDM {
 		return m_Drives;
 	}
 
+	std::vector<FileEntry> Console::GetDirectoryContents(const std::string& directoryPath)
+	{
+		bool success;
+		std::string response;
+		std::string command = "dirlist name=\"" + directoryPath + "\"";
+		success = SendCommand(command, response);
+
+		std::vector<FileEntry> files;
+		if (!success || response.find("file not found\r\n") == 0)
+		{
+			success = false;
+			return files;
+		}
+
+		while (success)
+		{
+			FileEntry entry;
+
+			entry.Name = GetStringProperty(response, "name", success, true);
+			entry.Size = ((UINT64)GetIntegerProperty(response, "sizehi", success, true, true) << 32) | GetIntegerProperty(response, "sizelo", success, true, true);
+			entry.CreationTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(response, "createhi", success, true, true) << 32) | GetIntegerProperty(response, "createlo", success, true, true));
+			entry.ModifiedTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(response, "changehi", success, true, true) << 32) | GetIntegerProperty(response, "changelo", success, true, true));
+			entry.IsDirectory = response.find(" directory") == 0;
+
+			if (success)
+				files.push_back(entry);
+		}
+
+		return files;
+	}
+
 	void Console::CleanupSocket()
 	{
 #ifdef _WIN32

@@ -18,6 +18,7 @@ namespace XBDM {
 		bool CloseConnection();
 
 		std::vector<Drive> GetDrives();
+		std::vector<FileEntry> GetDirectoryContents(const std::string& directoryPath);
 	private:
 		bool m_Connected = false;
 		std::string m_IpAddress;

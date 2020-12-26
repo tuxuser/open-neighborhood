@@ -14,6 +14,8 @@
 	typedef int SOCKET;
 #endif
 
+#define FILETIME_TO_TIMET(time) ((time_t)(time / 10000000L - 11644473600L))
+
 namespace XBDM
 {
 	enum class ResponseStatus
