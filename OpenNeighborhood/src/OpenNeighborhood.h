@@ -2,6 +2,7 @@
 
 #include "Core/Layer.h"
 #include "Panels/MainPanel.h"
+#include "Panels/PathPanel.h"
 
 class OpenNeighborhood : public Layer
 {
@@ -15,4 +16,5 @@ public:
 	virtual void OnEvent(Event& event) override;
 private:
 	MainPanel m_MainPanel;
+	PathPanel m_PathPanel;
 };

@@ -26,6 +26,7 @@ void OpenNeighborhood::OnUpdate(Timestep ts)
 	UI::BeginFrame();
 
 	m_MainPanel.OnRender();
+	m_PathPanel.OnRender();
 
 	UI::EndFrame();
 }

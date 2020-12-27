@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Panels/MainPanel.h"
+#include "Panels/PathPanel.h"
 
 #include "Core/App.h"
 
-void MainPanel::OnRender()
+void PathPanel::OnRender()
 {
 	App& app = App::Get();
 	unsigned int windowWidth = app.GetWindow().GetWidth();
@@ -14,13 +14,12 @@ void MainPanel::OnRender()
 		| ImGuiWindowFlags_NoCollapse
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoMove
-		| ImGuiWindowFlags_NoBringToFrontOnFocus
 		| ImGuiWindowFlags_NoNavFocus
 	;
 
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImVec2((float)windowWidth, (float)windowHeight));
+	ImGui::SetNextWindowPos(ImVec2(m_Margin, m_Margin));
+	ImGui::SetNextWindowSize(ImVec2((float)windowWidth - m_Margin * 2.0f, m_Margin * 5.0f));
 
-	ImGui::Begin("Main Window", nullptr, windowFlags);
+	ImGui::Begin("Path Window", nullptr, windowFlags);
 	ImGui::End();
 }
