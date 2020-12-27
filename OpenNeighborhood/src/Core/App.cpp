@@ -12,7 +12,11 @@ App::App(const std::string& name)
 	m_Window->SetEventCallback(BIND_EVENT_FN(App::OnEvent));
 }
 
-App::~App() {}
+App::~App()
+{
+	for (Layer* layer : m_LayerStack)
+		layer->OnDetach();
+}
 
 void App::PushLayer(Layer* layer)
 {
