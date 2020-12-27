@@ -28,22 +28,6 @@ void UI::Init()
 	ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void UI::Render()
-{
-	BeginFrame();
-
-	ImGui::ShowDemoWindow();
-
-	EndFrame();
-}
-
-void UI::Cleanup()
-{
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-}
-
 void UI::BeginFrame()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -56,6 +40,13 @@ void UI::EndFrame()
 {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void UI::Cleanup()
+{
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void UI::SetDarkThemeColors()

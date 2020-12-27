@@ -23,5 +23,9 @@ void OpenNeighborhood::OnEvent(Event& event)
 
 void OpenNeighborhood::OnUpdate(Timestep ts)
 {
-	UI::Render();
+	UI::BeginFrame();
+
+	m_MainPanel.OnRender();
+
+	UI::EndFrame();
 }

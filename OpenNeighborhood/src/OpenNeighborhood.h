@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Layer.h"
+#include "Panels/MainPanel.h"
 
 class OpenNeighborhood : public Layer
 {
@@ -12,4 +13,6 @@ public:
 	virtual void OnDetach() override;
 	virtual void OnUpdate(Timestep timestep) override;
 	virtual void OnEvent(Event& event) override;
+private:
+	MainPanel m_MainPanel;
 };
