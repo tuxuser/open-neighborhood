@@ -32,6 +32,6 @@ private:
 
 	static App* s_Instance;
 
-	bool OnWindowClose(WindowCloseEvent& e);
-	bool OnWindowResize(WindowResizeEvent& e);
+	bool OnWindowClose(WindowCloseEvent& event);
+	bool OnWindowResize(WindowResizeEvent& event);
 };

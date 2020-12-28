@@ -42,28 +42,28 @@ void App::Run()
 	}
 }
 
-void App::OnEvent(Event& e)
+void App::OnEvent(Event& event)
 {
-	EventDispatcher dispatcher(e);
+	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClose));
 
 	for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 	{
-		(*--it)->OnEvent(e);
-		if (e.m_Handled)
+		(*--it)->OnEvent(event);
+		if (event.m_Handled)
 			break;
 	}
 }
 
-bool App::OnWindowClose(WindowCloseEvent& e)
+bool App::OnWindowClose(WindowCloseEvent& event)
 {
 	Close();
 	return true;
 }
 
-bool App::OnWindowResize(WindowResizeEvent& e)
+bool App::OnWindowResize(WindowResizeEvent& event)
 {
-	if (e.GetWidth() == 0 || e.GetHeight() == 0)
+	if (event.GetWidth() == 0 || event.GetHeight() == 0)
 	{
 		m_Minimized = true;
 		return false;
