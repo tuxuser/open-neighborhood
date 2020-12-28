@@ -6,6 +6,8 @@
 #include "Panels/PathPanel.h"
 #include "Panels/ContentsPanel.h"
 
+#include "Events/AppEvent.h"
+
 OpenNeighborhood::OpenNeighborhood()
 	: Layer("OpenNeighborhood") {}
 
@@ -25,7 +27,8 @@ void OpenNeighborhood::OnDetach()
 
 void OpenNeighborhood::OnEvent(Event& event)
 {
-
+	for (Panel* panel : m_PanelStack)
+		panel->OnEvent(event);
 }
 
 void OpenNeighborhood::OnUpdate(Timestep ts)
