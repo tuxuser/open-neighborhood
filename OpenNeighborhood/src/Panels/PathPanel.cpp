@@ -1,19 +1,6 @@
 #include "pch.h"
 #include "Panels/PathPanel.h"
 
-#include "Core/App.h"
-
-PathPanel::PathPanel()
-{
-	SetWindowWidthAndHeight();
-}
-
-void PathPanel::OnEvent(Event& event)
-{
-	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(PathPanel::OnWindowResize));
-}
-
 void PathPanel::OnRender()
 {
 	ImGuiWindowFlags windowFlags =
@@ -29,17 +16,4 @@ void PathPanel::OnRender()
 
 	ImGui::Begin("Path Window", nullptr, windowFlags);
 	ImGui::End();
-}
-
-bool PathPanel::OnWindowResize(WindowResizeEvent& event)
-{
-	SetWindowWidthAndHeight();
-	return true;
-}
-
-void PathPanel::SetWindowWidthAndHeight()
-{
-	App& app = App::Get();
-	m_WindowWidth = app.GetWindow().GetWidth();
-	m_WindowHeight = app.GetWindow().GetHeight();
 }

@@ -1,19 +1,6 @@
 #include "pch.h"
 #include "Panels/ContentsPanel.h"
 
-#include "Core/App.h"
-
-ContentsPanel::ContentsPanel()
-{
-	SetWindowWidthAndHeight();
-}
-
-void ContentsPanel::OnEvent(Event& event)
-{
-	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(ContentsPanel::OnWindowResize));
-}
-
 void ContentsPanel::OnRender()
 {
 	float pathPanelSize = m_Margin * 5.0f;
@@ -31,17 +18,4 @@ void ContentsPanel::OnRender()
 
 	ImGui::Begin("Contents Window", nullptr, windowFlags);
 	ImGui::End();
-}
-
-bool ContentsPanel::OnWindowResize(WindowResizeEvent& event)
-{
-	SetWindowWidthAndHeight();
-	return true;
-}
-
-void ContentsPanel::SetWindowWidthAndHeight()
-{
-	App& app = App::Get();
-	m_WindowWidth = app.GetWindow().GetWidth();
-	m_WindowHeight = app.GetWindow().GetHeight();
 }
