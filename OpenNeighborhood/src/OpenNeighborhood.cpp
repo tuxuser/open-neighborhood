@@ -35,8 +35,8 @@ void OpenNeighborhood::OnUpdate(Timestep ts)
 {
 	UI::BeginFrame();
 
-	for (Panel* panel : m_PanelStack)
-		panel->OnRender();
+	for (auto it = m_PanelStack.end(); it != m_PanelStack.begin();)
+		(*--it)->OnRender();
 
 	UI::EndFrame();
 }
