@@ -14,7 +14,9 @@ void MainPanel::OnRender()
 
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImVec2((float)m_WindowWidth, (float)m_WindowHeight));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	ImGui::Begin("Main Window", nullptr, windowFlags);
+	ImGui::PopStyleVar();
 	ImGui::End();
 }
