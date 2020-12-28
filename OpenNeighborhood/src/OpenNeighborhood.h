@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core/Layer.h"
-#include "Panels/MainPanel.h"
-#include "Panels/PathPanel.h"
+#include "Core/Stack.h"
+#include "Panels/Panel.h"
 
 class OpenNeighborhood : public Layer
 {
@@ -15,6 +15,5 @@ public:
 	virtual void OnUpdate(Timestep timestep) override;
 	virtual void OnEvent(Event& event) override;
 private:
-	MainPanel m_MainPanel;
-	PathPanel m_PathPanel;
+	Stack<Panel*> m_PanelStack;
 };

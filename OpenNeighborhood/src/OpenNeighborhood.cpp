@@ -2,6 +2,8 @@
 #include "OpenNeighborhood.h"
 
 #include "Render/UI.h"
+#include "Panels/MainPanel.h"
+#include "Panels/PathPanel.h"
 
 OpenNeighborhood::OpenNeighborhood()
 	: Layer("OpenNeighborhood") {}
@@ -9,6 +11,9 @@ OpenNeighborhood::OpenNeighborhood()
 void OpenNeighborhood::OnAttach()
 {
 	UI::Init();
+
+	m_PanelStack.Push(new MainPanel());
+	m_PanelStack.Push(new PathPanel());
 }
 
 void OpenNeighborhood::OnDetach()
@@ -25,8 +30,8 @@ void OpenNeighborhood::OnUpdate(Timestep ts)
 {
 	UI::BeginFrame();
 
-	m_MainPanel.OnRender();
-	m_PathPanel.OnRender();
+	for (Panel* panel : m_PanelStack)
+		panel->OnRender();
 
 	UI::EndFrame();
 }
