@@ -36,8 +36,6 @@ void Window::Init(const WindowProps& props)
 	m_Data.width = props.width;
 	m_Data.height = props.height;
 
-	LOG_INFO("Creating window \"", props.title, "\" (", props.width, ", ", props.height, ")");
-
 	if (!s_GLFWInitialized)
 	{
 		int success = glfwInit();
