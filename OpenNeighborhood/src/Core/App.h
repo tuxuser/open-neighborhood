@@ -4,7 +4,8 @@
 #include "Events/Event.h"
 #include "Events/AppEvent.h"
 #include "Core/Window.h"
-#include "Core/LayerStack.h"
+#include "Core/Stack.h"
+#include "Core/Layer.h"
 
 class App
 {
@@ -27,7 +28,7 @@ private:
 	bool m_Running = true;
 	bool m_Minimized = false;
 
-	LayerStack m_LayerStack;
+	Stack<Layer*> m_LayerStack;
 
 	static App* s_Instance;
 

@@ -20,7 +20,7 @@ App::~App()
 
 void App::PushLayer(Layer* layer)
 {
-	m_LayerStack.PushLayer(layer);
+	m_LayerStack.Push(layer);
 	layer->OnAttach();
 }
 
