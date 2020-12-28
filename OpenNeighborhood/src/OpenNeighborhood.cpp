@@ -4,6 +4,7 @@
 #include "Render/UI.h"
 #include "Panels/MainPanel.h"
 #include "Panels/PathPanel.h"
+#include "Panels/ContentsPanel.h"
 
 OpenNeighborhood::OpenNeighborhood()
 	: Layer("OpenNeighborhood") {}
@@ -14,6 +15,7 @@ void OpenNeighborhood::OnAttach()
 
 	m_PanelStack.Push(new MainPanel());
 	m_PanelStack.Push(new PathPanel());
+	m_PanelStack.Push(new ContentsPanel());
 }
 
 void OpenNeighborhood::OnDetach()
