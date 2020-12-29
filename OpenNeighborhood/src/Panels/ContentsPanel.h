@@ -10,7 +10,4 @@ public:
 	ContentsPanel();
 
 	virtual void OnRender() override;
-private:
-	std::unordered_map<std::string, Ref<Texture>> m_Textures;
-	uint32_t m_TextureCount = 0;
 };

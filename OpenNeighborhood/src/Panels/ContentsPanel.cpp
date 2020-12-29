@@ -1,15 +1,10 @@
 #include "pch.h"
 #include "Panels/ContentsPanel.h"
+#include "Render/TextureManager.h"
 
 ContentsPanel::ContentsPanel()
 {
-	m_Textures["addXboxButton"] = std::make_shared<Texture>("assets/icons/addXboxButton.png");
-
-	for (auto& texture : m_Textures)
-	{
-		texture.second->Bind(m_TextureCount);
-		m_TextureCount++;
-	}
+	TextureManager::AddTexture("addXboxButton", "assets/icons/addXboxButton.png");
 }
 
 void ContentsPanel::OnRender()
@@ -29,6 +24,6 @@ void ContentsPanel::OnRender()
 	ImGui::SetNextWindowSize(ImVec2((float)m_WindowWidth - m_Margin * 2.0f, (float)m_WindowHeight - (m_Margin * 3.0f + pathPanelSize)));
 
 	ImGui::Begin("Contents Window", nullptr, windowFlags);
-	ImGui::ImageButtonWithText((void*)(intptr_t)m_Textures.find("addXboxButton")->second->GetTexture(), ImVec2(100.0f, 100.0f), "Add Xbox 360");
+	ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture("addXboxButton")->GetTexture(), ImVec2(100.0f, 100.0f), "Add Xbox 360");
 	ImGui::End();
 }
