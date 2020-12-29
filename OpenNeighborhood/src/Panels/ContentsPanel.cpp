@@ -4,7 +4,6 @@
 ContentsPanel::ContentsPanel()
 {
 	m_Textures["addXboxButton"] = std::make_shared<Texture>("assets/icons/addXboxButton.png");
-	m_Textures["ChernoLogo"] = std::make_shared<Texture>("assets/icons/ChernoLogo.png");
 
 	for (auto& texture : m_Textures)
 	{
