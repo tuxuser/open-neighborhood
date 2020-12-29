@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Panels/Panel.h"
-#include "Events/AppEvent.h"
-#include "Render/Texture.h"
+#include "Elements/Element.h"
 
 class ContentsPanel : public Panel
 {
@@ -10,4 +9,6 @@ public:
 	ContentsPanel();
 
 	virtual void OnRender() override;
+private:
+	std::vector<Ref<Element>> m_Elements;
 };
