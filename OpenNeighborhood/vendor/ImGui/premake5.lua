@@ -10,6 +10,8 @@ project "ImGui"
 		"imconfig.h",
 		"imgui.h",
 		"imgui.cpp",
+        "imgui_custom_widgets.h",
+        "imgui_custom_widgets.cpp",
 		"imgui_draw.cpp",
         "imgui_impl_glfw.cpp",
         "imgui_impl_glfw.h",
