@@ -4,6 +4,7 @@
 #include <sstream>
 #include <functional>
 #include <vector>
+#include <unordered_map>
 
 #include "Core/Log.h"
 #include "Core/Assert.h"
