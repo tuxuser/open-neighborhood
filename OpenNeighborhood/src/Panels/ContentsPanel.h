@@ -11,5 +11,6 @@ public:
 
 	virtual void OnRender() override;
 private:
-	Ref<Texture> m_Texture;
+	std::unordered_map<std::string, Ref<Texture>> m_Textures;
+	uint32_t m_TextureCount = 0;
 };
