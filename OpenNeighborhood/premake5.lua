@@ -12,7 +12,9 @@ project "OpenNeighborhood"
 
 	files {
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"vendor/stb_image/**.h",
+		"vendor/stb_image/**.cpp"
 	}
 
 	includedirs {
@@ -20,7 +22,8 @@ project "OpenNeighborhood"
 		"%{wks.location}/XBDM/src",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	defines {
