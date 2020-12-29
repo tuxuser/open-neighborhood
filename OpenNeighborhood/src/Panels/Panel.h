@@ -1,6 +1,7 @@
 #pragma once
 
 #include <imgui.h>
+#include <imgui_custom_widgets.h>
 
 #include "Events/AppEvent.h"
 
