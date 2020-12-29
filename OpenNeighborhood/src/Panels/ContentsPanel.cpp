@@ -24,6 +24,6 @@ void ContentsPanel::OnRender()
 	ImGui::SetNextWindowSize(ImVec2((float)m_WindowWidth - m_Margin * 2.0f, (float)m_WindowHeight - (m_Margin * 3.0f + pathPanelSize)));
 
 	ImGui::Begin("Contents Window", nullptr, windowFlags);
-	ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture("addXboxButton")->GetTexture(), ImVec2(100.0f, 100.0f), "Add Xbox 360");
+	ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture("addXboxButton")->GetTextureID(), ImVec2(100.0f, 100.0f), "Add Xbox 360");
 	ImGui::End();
 }
