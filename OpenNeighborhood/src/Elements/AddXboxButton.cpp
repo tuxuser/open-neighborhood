@@ -15,6 +15,8 @@ void AddXboxButton::OnRender()
 	ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
+	bool xboxCreationSuccess = true;
+
 	if (ImGui::BeginPopupModal("Add Xbox 360 ?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		static int bytes[4] = { 192, 168, 1, 100 };
@@ -64,7 +66,11 @@ void AddXboxButton::OnRender()
 			std::stringstream ipAddress;
 			ipAddress << bytes[0] << "." << bytes[1] << "." << bytes[2] << "." << bytes[3];
 			
-			AddXbox(ipAddress.str());
+			std::string consoleName;
+			xboxCreationSuccess = XboxManager::CreateConsole(ipAddress.str(), consoleName);
+
+			if (xboxCreationSuccess)
+				LOG_SUCCESS("Successfully created console ", consoleName);
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -77,9 +83,22 @@ void AddXboxButton::OnRender()
 
 		ImGui::EndPopup();
 	}
-}
 
-void AddXboxButton::AddXbox(const std::string& ipAddress)
-{
-	XboxManager::CreateConsole(ipAddress);
+	if (!xboxCreationSuccess)
+	{
+		ImGui::OpenPopup("Connection failed!");
+
+		ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	}
+
+	if (ImGui::BeginPopupModal("Connection failed!", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("Couldn't find console");
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+			ImGui::CloseCurrentPopup();
+
+		ImGui::EndPopup();
+	}
 }
