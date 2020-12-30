@@ -18,6 +18,7 @@ namespace XBDM {
 		bool OpenConnection();
 		bool CloseConnection();
 
+		std::string GetConsoleName();
 		std::vector<Drive> GetDrives();
 		std::vector<FileEntry> GetDirectoryContents(const std::string& directoryPath);
 	private:
@@ -25,6 +26,7 @@ namespace XBDM {
 		std::string m_IpAddress;
 		SOCKET m_Socket;
 
+		std::string m_ConsoleName;
 		std::vector<Drive> m_Drives;
 
 		void CleanupSocket();

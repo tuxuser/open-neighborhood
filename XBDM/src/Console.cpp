@@ -95,6 +95,16 @@ namespace XBDM {
 		return true;
 	}
 
+	std::string Console::GetConsoleName()
+	{
+		if (m_ConsoleName == "")
+		{
+			std::string command = "dbgname";
+			SendCommand(command, m_ConsoleName);
+		}
+		return m_ConsoleName;
+	}
+
 	std::vector<Drive> Console::GetDrives()
 	{
 		if (m_Drives.size() != 0)
