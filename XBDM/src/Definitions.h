@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 
 #ifndef _WIN32
 	typedef uint8_t     BYTE;
