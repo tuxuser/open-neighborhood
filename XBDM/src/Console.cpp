@@ -83,9 +83,7 @@ namespace XBDM {
 
 	bool Console::CloseConnection()
 	{
-		std::string response;
-		std::string command = "bye";
-		SendCommand(command, response);
+		SendCommand("bye");
 
 		shutdown(m_Socket, 1);
 		CloseSocket();
@@ -99,8 +97,7 @@ namespace XBDM {
 	{
 		if (m_ConsoleName == "")
 		{
-			std::string command = "dbgname";
-			SendCommand(command, m_ConsoleName);
+			SendCommand("dbgname", m_ConsoleName);
 		}
 		return m_ConsoleName;
 	}
@@ -111,8 +108,7 @@ namespace XBDM {
 			return m_Drives;
 
 		std::string response;
-		std::string command = "drivelist";
-		SendCommand(command, response);
+		SendCommand("drivelist", response);
 
 		// get all of the drive names from the response
 		bool ok = true;
@@ -130,8 +126,7 @@ namespace XBDM {
 		// now that all of the drive names are loaded, let's get the drive size information
 		for (Drive& drive : m_Drives)
 		{
-			command = "drivefreespace name=\"" + drive.Name + ":\\\"";
-			SendCommand(command, response);
+			SendCommand("drivefreespace name=\"" + drive.Name + ":\\\"", response);
 
 			drive.FreeBytesAvailable = ((UINT64)GetIntegerProperty(response, "freetocallerhi", ok, true) << 32) |
 				(UINT64)GetIntegerProperty(response, "freetocallerlo", ok, true);
@@ -160,8 +155,7 @@ namespace XBDM {
 	{
 		bool success;
 		std::string response;
-		std::string command = "dirlist name=\"" + directoryPath + "\"";
-		success = SendCommand(command, response);
+		success = SendCommand("dirlist name=\"" + directoryPath + "\"", response);
 
 		std::vector<FileEntry> files;
 		if (!success || response.find("file not found\r\n") == 0)
@@ -215,19 +209,25 @@ namespace XBDM {
 		return true;
 	}
 
-	bool Console::SendCommand(std::string& command, std::string& response, DWORD responseLength, DWORD statusLength)
+	bool Console::SendCommand(const std::string& command)
+	{
+		std::string response;
+		return SendCommand(command, response);
+	}
+
+	bool Console::SendCommand(const std::string& command, std::string& response, DWORD responseLength, DWORD statusLength)
 	{
 		ResponseStatus status;
 		return SendCommand(command, response, status, responseLength, statusLength);
 	}
 
-	bool Console::SendCommand(std::string& command, std::string& response, ResponseStatus& status, DWORD responseLength, DWORD statusLength)
+	bool Console::SendCommand(const std::string& command, std::string& response, ResponseStatus& status, DWORD responseLength, DWORD statusLength)
 	{
 		response = "";
 
 		// send the command to the devkit
-		command += "\r\n";
-		if (!SendBinary((BYTE*)command.c_str(), (DWORD)command.length()))
+		std::string fullCommand = command + "\r\n";
+		if (!SendBinary((BYTE*)fullCommand.c_str(), (DWORD)fullCommand.length()))
 			return false;
 
 		// time for the console to compile the response

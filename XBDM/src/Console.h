@@ -33,8 +33,9 @@ namespace XBDM {
 		void CloseSocket();
 
 		bool SendBinary(const BYTE* buffer, DWORD length);
-		bool SendCommand(std::string& command, std::string& response, DWORD responseLength = 0x400, DWORD statusLength = -1);
-		bool SendCommand(std::string& command, std::string& response, ResponseStatus& status, DWORD responseLength = 0x400, DWORD statusLength = -1);
+		bool SendCommand(const std::string& command);
+		bool SendCommand(const std::string& command, std::string& response, DWORD responseLength = 0x400, DWORD statusLength = -1);
+		bool SendCommand(const std::string& command, std::string& response, ResponseStatus& status, DWORD responseLength = 0x400, DWORD statusLength = -1);
 
 		bool ReceiveTextBuffer(BYTE* buffer, DWORD length);
 		bool ReceiveBinary(BYTE* buffer, DWORD length, DWORD& bytesRecieved);
