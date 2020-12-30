@@ -3,7 +3,16 @@
 
 XBDM::Console XboxManager::s_Console;
 
-void XboxManager::CreateConsole(const std::string& ipAddress)
+bool XboxManager::CreateConsole(const std::string& ipAddress, std::string& consoleName)
 {
 	s_Console = XBDM::Console(ipAddress);
+
+	if (s_Console.OpenConnection())
+	{
+		consoleName = s_Console.GetConsoleName();
+		s_Console.CloseConnection();
+		return true;
+	}
+	else
+		return false;
 }

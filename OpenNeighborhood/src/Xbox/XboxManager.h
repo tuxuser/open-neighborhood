@@ -5,7 +5,7 @@
 class XboxManager
 {
 public:
-	static void CreateConsole(const std::string& ipAddress);
+	static bool CreateConsole(const std::string& ipAddress, std::string& consoleName);
 
 	static XBDM::Console GetConsole() { return s_Console; }
 private:
