@@ -2,8 +2,11 @@
 #include "Console.h"
 
 namespace XBDM {
+	Console::Console()
+		: m_Socket(INVALID_SOCKET) {}
+
 	Console::Console(const std::string& ipAddress)
-		: m_IpAddress(ipAddress) {}
+		: m_IpAddress(ipAddress), m_Socket(INVALID_SOCKET) {}
 
 	bool Console::OpenConnection()
 	{

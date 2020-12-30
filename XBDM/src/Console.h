@@ -12,6 +12,7 @@ namespace XBDM {
 	class Console
 	{
 	public:
+		Console();
 		Console(const std::string& ipAddress);
 
 		bool OpenConnection();
