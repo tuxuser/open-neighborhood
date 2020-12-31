@@ -11,7 +11,7 @@ void TextureManager::AddTexture(const std::string& textureName, const std::strin
 	if (!s_TextureCount)
 		s_TextureCount = 0;
 		
-	s_Textures[textureName] = std::make_shared<Texture>(filePath);
+	s_Textures[textureName] = CreateRef<Texture>(filePath);
 	s_Textures[textureName]->Bind(s_TextureCount);
 	s_TextureCount++;
 }

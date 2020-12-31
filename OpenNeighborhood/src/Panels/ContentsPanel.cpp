@@ -8,7 +8,7 @@ ContentsPanel::ContentsPanel()
 {
 	TextureManager::AddTexture("addXboxButton", "assets/icons/addXboxButton.png");
 
-	m_Elements.push_back(std::make_shared<AddXboxButton>());
+	m_Elements.push_back(CreateRef<AddXboxButton>());
 
 	UpdateEventCallbacks();
 }
