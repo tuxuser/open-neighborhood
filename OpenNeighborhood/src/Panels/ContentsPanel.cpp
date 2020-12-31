@@ -9,6 +9,8 @@ ContentsPanel::ContentsPanel()
 	TextureManager::AddTexture("addXboxButton", "assets/icons/addXboxButton.png");
 
 	m_Elements.push_back(std::make_shared<AddXboxButton>());
+
+	UpdateEventCallbacks();
 }
 
 void ContentsPanel::OnRender()
@@ -33,4 +35,33 @@ void ContentsPanel::OnRender()
 		element->OnRender();
 
 	ImGui::End();
+}
+
+void ContentsPanel::OnEvent(Event& event)
+{
+	Panel::OnEvent(event);
+
+	EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<ContentsChangeEvent>(BIND_EVENT_FN(ContentsPanel::OnContentsChange));
+}
+
+bool ContentsPanel::OnContentsChange(ContentsChangeEvent& event)
+{
+	if (event.Append())
+	{
+		m_Elements.reserve(m_Elements.size() + event.GetElements()->size());
+		m_Elements.insert(m_Elements.end(), event.GetElements()->begin(), event.GetElements()->end());
+	}
+	else
+	{
+		m_Elements = *event.GetElements();
+	}
+
+	return true;
+}
+
+void ContentsPanel::UpdateEventCallbacks()
+{
+	for (auto& element : m_Elements)
+		element->SetEventCallback(BIND_EVENT_FN(ContentsPanel::OnEvent));
 }

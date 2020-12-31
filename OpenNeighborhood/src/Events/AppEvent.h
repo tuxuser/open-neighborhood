@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Events/Event.h"
+#include "Elements/Element.h"
 
 class WindowResizeEvent : public Event
 {
@@ -30,6 +31,22 @@ public:
 
 	EVENT_CLASS_TYPE(WindowClose)
 	EVENT_CLASS_CATEGORY(EventCategoryApp)
+};
+
+class ContentsChangeEvent : public Event
+{
+public:
+	ContentsChangeEvent(Ref<std::vector<Ref<Element>>> elements, bool append = false)
+		: m_Elements(elements), m_Append(append) {}
+
+	inline Ref<std::vector<Ref<Element>>> GetElements() const { return m_Elements; }
+	inline bool Append() const { return m_Append; }
+
+	EVENT_CLASS_TYPE(ContentsChange)
+	EVENT_CLASS_CATEGORY(EventCategoryApp)
+private:
+	Ref<std::vector<Ref<Element>>> m_Elements;
+	bool m_Append;
 };
 
 class AppTickEvent : public Event

@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include <imgui_custom_widgets.h>
 
+#include "Events/Event.h"
+
 class Element
 {
 public:
@@ -15,7 +17,11 @@ public:
 
 	std::string GetLabel() const { return m_Label; }
 	std::string GetTextureName() const { return m_TextureName; }
+
+	using EventCallbackFn = std::function<void(Event&)>;
+	void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
 protected:
 	std::string m_Label;
 	std::string m_TextureName;
+	EventCallbackFn m_EventCallback;
 };
