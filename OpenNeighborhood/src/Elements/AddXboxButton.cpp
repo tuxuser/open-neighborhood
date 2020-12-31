@@ -5,11 +5,11 @@
 #include "Xbox/XboxManager.h"
 
 AddXboxButton::AddXboxButton() 
-	: Element("Add Xbox 360", "addXboxButton") {}
+	: Element("Add Xbox 360", "addXboxButton", 100.0f, 100.0f) {}
 
 void AddXboxButton::OnRender()
 {
-	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(100.0f, 100.0f), m_Label.c_str()))
+	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(m_Width, m_Height), m_Label.c_str()))
 		ImGui::OpenPopup("Add Xbox 360 ?");
 
 	ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);

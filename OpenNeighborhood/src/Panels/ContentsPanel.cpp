@@ -38,7 +38,7 @@ void ContentsPanel::OnRender()
 		ImGui::PushID((int)i);
 		m_Elements[i]->OnRender();
 		float lastButtonX = ImGui::GetItemRectMax().x;
-		float nextButtonX = lastButtonX + style.ItemSpacing.x + 100; // Expected position if next button was on same line
+		float nextButtonX = lastButtonX + style.ItemSpacing.x + m_Elements[i]->GetWidth(); // Expected position if next button was on same line
 		if (i + 1 < m_Elements.size() && nextButtonX < panelWidth)
 			ImGui::SameLine();
 		ImGui::PopID();
