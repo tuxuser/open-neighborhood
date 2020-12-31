@@ -15,13 +15,13 @@ public:
 
 	virtual void OnRender() = 0;
 
-	std::string GetLabel() const { return m_Label; }
-	std::string GetTextureName() const { return m_TextureName; }
-	float GetWidth() const { return m_Width; }
-	float GetHeight() const { return m_Height; }
+	inline std::string GetLabel() const { return m_Label; }
+	inline std::string GetTextureName() const { return m_TextureName; }
+	inline float GetWidth() const { return m_Width; }
+	inline float GetHeight() const { return m_Height; }
 
 	using EventCallbackFn = std::function<void(Event&)>;
-	void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
+	inline void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
 protected:
 	std::string m_Label;
 	std::string m_TextureName;
