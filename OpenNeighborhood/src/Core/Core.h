@@ -16,6 +16,12 @@
 	#define DEBUGBREAK()
 #endif
 
+#if defined(PLATFORM_WINDOWS)
+	#define WORKING_DIR "./"
+#elif defined(PLATFORM_LINUX)
+	#define WORKING_DIR "./OpenNeighborhood/"
+#endif
+
 #define BIT(x) (1 << x)
 
 #define BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

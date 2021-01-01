@@ -9,5 +9,5 @@ Element::Element(const std::string& label, const std::string& textureName, float
 	if (TextureManager::TextureExists(textureName))
 		return;
 
-	TextureManager::AddTexture(textureName, "OpenNeighborhood/assets/icons/" + textureName + ".png");
+	TextureManager::AddTexture(textureName, WORKING_DIR"assets/icons/" + textureName + ".png");
 }
