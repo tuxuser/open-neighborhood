@@ -5,7 +5,7 @@
 
 ContentsPanel::ContentsPanel()
 {
-	m_Elements.push_back(CreateRef<AddXboxButton>());
+	m_Elements.emplace_back(CreateRef<AddXboxButton>());
 
 	UpdateEventCallbacks();
 }
@@ -60,9 +60,7 @@ bool ContentsPanel::OnContentsChange(ContentsChangeEvent& event)
 		m_Elements.insert(m_Elements.end(), event.GetElements()->begin(), event.GetElements()->end());
 	}
 	else
-	{
 		m_Elements = *event.GetElements();
-	}
 
 	return true;
 }
