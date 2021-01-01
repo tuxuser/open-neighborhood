@@ -3,6 +3,8 @@
 
 #include "Render/TextureManager.h"
 #include "Xbox/XboxManager.h"
+#include "Events/AppEvent.h"
+#include "Elements/Xbox.h"
 
 AddXboxButton::AddXboxButton() 
 	: Element("Add Xbox 360", "addXboxButton", 100.0f, 100.0f) {}
@@ -70,7 +72,12 @@ void AddXboxButton::OnRender()
 			xboxCreationSuccess = XboxManager::CreateConsole(ipAddress.str(), consoleName);
 
 			if (xboxCreationSuccess)
-				LOG_SUCCESS("Successfully created console ", consoleName);
+			{
+				Ref<std::vector<Ref<Element>>> xboxVector = CreateRef<std::vector<Ref<Element>>>();
+				xboxVector->emplace_back(CreateRef<Xbox>(consoleName));
+				ContentsChangeEvent event(xboxVector, true);
+				m_EventCallback(event);
+			}
 
 			ImGui::CloseCurrentPopup();
 		}
