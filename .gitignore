@@ -12,3 +12,6 @@ bin-int/
 
 # GNU build files
 Makefile
+
+# Visual Studio Code
+.vscode/
