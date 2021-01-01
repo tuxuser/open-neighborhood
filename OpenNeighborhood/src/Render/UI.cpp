@@ -16,8 +16,8 @@ void UI::Init()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 20.0f);
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 20.0f);
+	io.Fonts->AddFontFromFileTTF("OpenNeighborhood/assets/fonts/opensans/OpenSans-Bold.ttf", 20.0f);
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("OpenNeighborhood/assets/fonts/opensans/OpenSans-Regular.ttf", 20.0f);
 
 	SetDarkThemeColors();
 
