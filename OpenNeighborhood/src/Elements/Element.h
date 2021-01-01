@@ -8,8 +8,7 @@
 class Element
 {
 public:
-	Element(const std::string& label, const std::string& textureName, float width = 0.0f, float height = 0.0f)
-		: m_Label(label), m_TextureName(textureName), m_Width(width), m_Height(height) {}
+	Element(const std::string& label, const std::string& textureName, float width = 0.0f, float height = 0.0f);
 
 	virtual ~Element() = default;
 

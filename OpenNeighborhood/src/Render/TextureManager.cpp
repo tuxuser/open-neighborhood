@@ -25,3 +25,8 @@ Ref<Texture> TextureManager::GetTexture(const std::string& textureName)
 
 	return texture->second;
 }
+
+bool TextureManager::TextureExists(const std::string& textureName)
+{
+	return s_Textures.find(textureName) != s_Textures.end();
+}

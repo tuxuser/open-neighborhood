@@ -1,13 +1,10 @@
 #include "pch.h"
 #include "Panels/ContentsPanel.h"
 
-#include "Render/TextureManager.h"
 #include "Elements/AddXboxButton.h"
 
 ContentsPanel::ContentsPanel()
 {
-	TextureManager::AddTexture("addXboxButton", "assets/icons/addXboxButton.png");
-
 	m_Elements.push_back(CreateRef<AddXboxButton>());
 
 	UpdateEventCallbacks();
