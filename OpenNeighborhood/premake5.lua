@@ -45,6 +45,15 @@ project "OpenNeighborhood"
 			"opengl32.lib"
 		}
 
+	filter "system:linux"
+		systemversion "latest"
+		links {
+			"X11",
+			"pthread",
+			"dl",
+			"stdc++fs"
+		}
+
 	filter "configurations:Debug"
 		defines "DEBUG"
 		runtime "Debug"
