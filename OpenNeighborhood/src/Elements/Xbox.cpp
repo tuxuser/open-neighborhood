@@ -3,8 +3,8 @@
 
 #include "Render/TextureManager.h"
 
-Xbox::Xbox(const std::string& label)
-	: Element(label, "xbox", 100.0f, 100.0f) {}
+Xbox::Xbox(const std::string& label, const std::string& ipAddress)
+	: m_IpAddress(ipAddress), Element(label, "xbox", 100.0f, 100.0f) {}
 
 void Xbox::OnRender()
 {
