@@ -11,7 +11,9 @@ workspace "OpenNeighborhood"
 		"MultiProcessorCompile"
 	}
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+OutputDir = "%{cfg.buildcfg}-%{cfg.system}"
+TargetDir = "bin/" .. OutputDir
+ObjDir = "bin-int/" .. OutputDir
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
