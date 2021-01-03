@@ -1,11 +1,33 @@
 #include "pch.h"
 #include "Panels/ContentsPanel.h"
 
+#define MINI_CASE_SENSITIVE
+#include <mINI/ini.h>
+
 #include "Elements/AddXboxButton.h"
+#include "Elements/Xbox.h"
 
 ContentsPanel::ContentsPanel()
 {
 	m_Elements.emplace_back(CreateRef<AddXboxButton>());
+
+	struct stat buffer;
+	if (stat("OpenNeighborhood.ini", &buffer) != -1)
+	{
+		mINI::INIFile configFile("OpenNeighborhood.ini");
+		mINI::INIStructure config;
+		configFile.read(config);
+
+		for (const auto& it : config)
+		{
+			const std::string& consoleName = it.first;
+			if (config.get(consoleName).has("ip_address"))
+			{
+				std::string ipAddress = config.get(consoleName).get("ip_address");
+				m_Elements.emplace_back(CreateRef<Xbox>(consoleName, ipAddress));
+			}
+		}
+	}
 
 	UpdateEventCallbacks();
 }
@@ -61,6 +83,8 @@ bool ContentsPanel::OnContentsChange(ContentsChangeEvent& event)
 	}
 	else
 		m_Elements = *event.GetElements();
+
+	UpdateEventCallbacks();
 
 	return true;
 }

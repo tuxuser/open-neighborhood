@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Elements/AddXboxButton.h"
 
+#define MINI_CASE_SENSITIVE
+#include <mINI/ini.h>
+
 #include "Render/TextureManager.h"
 #include "Xbox/XboxManager.h"
 #include "Events/AppEvent.h"
@@ -72,12 +75,7 @@ void AddXboxButton::OnRender()
 			xboxCreationSuccess = XboxManager::CreateConsole(ipAddress.str(), consoleName);
 
 			if (xboxCreationSuccess)
-			{
-				Ref<std::vector<Ref<Element>>> xboxVector = CreateRef<std::vector<Ref<Element>>>();
-				xboxVector->emplace_back(CreateRef<Xbox>(consoleName));
-				ContentsChangeEvent event(xboxVector, true);
-				m_EventCallback(event);
-			}
+				CreateXbox(consoleName, ipAddress.str());
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -107,5 +105,29 @@ void AddXboxButton::OnRender()
 			ImGui::CloseCurrentPopup();
 
 		ImGui::EndPopup();
+	}
+}
+
+void AddXboxButton::CreateXbox(const std::string& consoleName, const std::string& ipAddress)
+{
+	Ref<std::vector<Ref<Element>>> xboxVector = CreateRef<std::vector<Ref<Element>>>();
+	xboxVector->emplace_back(CreateRef<Xbox>(consoleName, ipAddress));
+	ContentsChangeEvent event(xboxVector, true);
+	m_EventCallback(event);
+
+	mINI::INIFile configFile("OpenNeighborhood.ini");
+	mINI::INIStructure config;
+
+	struct stat buffer;
+	if (stat("OpenNeighborhood.ini", &buffer) == -1)
+	{
+		config[consoleName]["ip_address"] = ipAddress;
+		configFile.generate(config, true);
+	}
+	else
+	{
+		configFile.read(config);
+		config[consoleName]["ip_address"] = ipAddress;
+		configFile.write(config, true);
 	}
 }
