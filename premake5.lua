@@ -17,9 +17,6 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "%{wks.location}/OpenNeighborhood/vendor/GLFW/include"
 IncludeDir["Glad"] = "%{wks.location}/OpenNeighborhood/vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/OpenNeighborhood/vendor/ImGui"
-IncludeDir["stb_image"] = "%{wks.location}/OpenNeighborhood/vendor/stb_image"
-IncludeDir["mINI"] = "%{wks.location}/OpenNeighborhood/vendor/mINI"
 
 group "Dependencies"
 	include "OpenNeighborhood/vendor/GLFW"

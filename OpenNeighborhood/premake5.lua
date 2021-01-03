@@ -19,12 +19,10 @@ project "OpenNeighborhood"
 
 	includedirs {
 		"src",
+		"vendor",
 		"%{wks.location}/XBDM/src",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.mINI}"
+		"%{IncludeDir.Glad}"
 	}
 
 	defines {

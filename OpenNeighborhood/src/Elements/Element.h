@@ -1,7 +1,7 @@
 #pragma once
 
-#include <imgui.h>
-#include <imgui_custom_widgets.h>
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_custom_widgets.h>
 
 #include "Events/Event.h"
 
