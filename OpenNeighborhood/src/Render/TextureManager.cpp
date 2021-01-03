@@ -20,8 +20,7 @@ Ref<Texture> TextureManager::GetTexture(const std::string& textureName)
 {
 	auto texture = s_Textures.find(textureName);
 
-	if (texture == s_Textures.end())
-		ASSERT(false, "Couldn't find texture!");
+	ASSERT(texture != s_Textures.end(), "Couldn't find texture!");
 
 	return texture->second;
 }
