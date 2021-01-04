@@ -48,30 +48,3 @@ private:
 	Ref<std::vector<Ref<Element>>> m_Elements;
 	bool m_Append;
 };
-
-class AppTickEvent : public Event
-{
-public:
-	AppTickEvent() {}
-
-	EVENT_CLASS_TYPE(AppTick)
-	EVENT_CLASS_CATEGORY(EventCategoryApp)
-};
-
-class AppUpdateEvent : public Event
-{
-public:
-	AppUpdateEvent() {}
-
-	EVENT_CLASS_TYPE(AppUpdate)
-	EVENT_CLASS_CATEGORY(EventCategoryApp)
-};
-
-class AppRenderEvent : public Event
-{
-public:
-	AppRenderEvent() {}
-
-	EVENT_CLASS_TYPE(AppRender)
-	EVENT_CLASS_CATEGORY(EventCategoryApp)
-};
