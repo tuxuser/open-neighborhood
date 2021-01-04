@@ -10,17 +10,15 @@
 #include "Elements/Xbox.h"
 
 AddXboxButton::AddXboxButton() 
-	: Element("Add Xbox 360", "addXboxButton", 100.0f, 100.0f) {}
+	: Element("Add Xbox 360", "addXboxButton", 100.0f, 100.0f, "Couldn't find console!") {}
 
 void AddXboxButton::OnRender()
 {
 	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(m_Width, m_Height), m_Label.c_str()))
-		ImGui::OpenPopup("Add Xbox 360 ?");
+		OnClick();
 
 	ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-	bool success = true;
 
 	if (ImGui::BeginPopupModal("Add Xbox 360 ?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
@@ -72,9 +70,9 @@ void AddXboxButton::OnRender()
 			ipAddress << bytes[0] << "." << bytes[1] << "." << bytes[2] << "." << bytes[3];
 			
 			std::string consoleName;
-			success = XboxManager::CreateConsole(ipAddress.str(), consoleName);
+			m_Success = XboxManager::CreateConsole(ipAddress.str(), consoleName);
 
-			if (success)
+			if (m_Success)
 				CreateXbox(consoleName, ipAddress.str());
 
 			ImGui::CloseCurrentPopup();
@@ -89,7 +87,7 @@ void AddXboxButton::OnRender()
 		ImGui::EndPopup();
 	}
 
-	if (!success)
+	if (!m_Success)
 	{
 		ImGui::OpenPopup("Connection failed!");
 
@@ -99,13 +97,18 @@ void AddXboxButton::OnRender()
 
 	if (ImGui::BeginPopupModal("Connection failed!", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Couldn't find console");
+		ImGui::Text(m_ErrorMessage.c_str());
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 			ImGui::CloseCurrentPopup();
 
 		ImGui::EndPopup();
 	}
+}
+
+void AddXboxButton::OnClick()
+{
+	ImGui::OpenPopup("Add Xbox 360 ?");
 }
 
 void AddXboxButton::CreateXbox(const std::string& consoleName, const std::string& ipAddress)

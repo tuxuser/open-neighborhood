@@ -4,9 +4,9 @@
 #include "Render/TextureManager.h"
 
 Drive::Drive(const XBDM::Drive& data)
-	: m_Data(data), Element(data.FriendlyName, "drive", 100.0f, 100.0f) {}
+	: m_Data(data), Element(data.FriendlyName, "drive", 100.0f, 100.0f, "Couldn't fetch content from this drive!") {}
 
-void Drive::OnRender()
+void Drive::OnClick()
 {
-	ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(m_Width, m_Height), m_Label.c_str());
+	
 }

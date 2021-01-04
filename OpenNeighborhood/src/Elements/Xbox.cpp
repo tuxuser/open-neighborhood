@@ -7,50 +7,27 @@
 #include "Elements/Drive.h"
 
 Xbox::Xbox(const std::string& label, const std::string& ipAddress)
-	: m_IpAddress(ipAddress), Element(label, "xbox", 100.0f, 100.0f) {}
+	: m_IpAddress(ipAddress), Element(label, "xbox", 100.0f, 100.0f, "Couldn't find console!") {}
 
-void Xbox::OnRender()
+void Xbox::OnClick()
 {
-	bool success = true;
+	std::string consoleName;
+	m_Success = XboxManager::CreateConsole(m_IpAddress, consoleName, true);
 
-	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(m_Width, m_Height), m_Label.c_str()))
+	if (m_Success)
 	{
-		std::string consoleName;
-		success = XboxManager::CreateConsole(m_IpAddress, consoleName, true);
+		Ref<std::vector<Ref<Element>>> driveElements = CreateRef<std::vector<Ref<Element>>>();
+		XBDM::Console xbox = XboxManager::GetConsole();
 
-		if (success)
+		std::vector<XBDM::Drive> drives = xbox.GetDrives(&m_Success);
+
+		if (m_Success)
 		{
-			Ref<std::vector<Ref<Element>>> driveElements = CreateRef<std::vector<Ref<Element>>>();
-			XBDM::Console xbox = XboxManager::GetConsole();
-			
-			std::vector<XBDM::Drive> drives = xbox.GetDrives(&success);
+			for (auto& drive : drives)
+				driveElements->emplace_back(CreateRef<Drive>(drive));
 
-			if (success)
-			{
-				for (auto& drive : drives)
-					driveElements->emplace_back(CreateRef<Drive>(drive));
-
-				ContentsChangeEvent event(driveElements);
-				m_EventCallback(event);
-			}
+			ContentsChangeEvent event(driveElements);
+			m_EventCallback(event);
 		}
-	}
-
-	if (!success)
-	{
-		ImGui::OpenPopup("Connection failed!");
-
-		ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
-		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-	}
-
-	if (ImGui::BeginPopupModal("Connection failed!", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-	{
-		ImGui::Text("Couldn't find console");
-
-		if (ImGui::Button("OK", ImVec2(120, 0)))
-			ImGui::CloseCurrentPopup();
-
-		ImGui::EndPopup();
 	}
 }

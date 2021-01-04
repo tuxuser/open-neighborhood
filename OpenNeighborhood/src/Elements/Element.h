@@ -8,11 +8,12 @@
 class Element
 {
 public:
-	Element(const std::string& label, const std::string& textureName, float width = 0.0f, float height = 0.0f);
+	Element(const std::string& label, const std::string& textureName, float width, float height, const std::string& errorMessage);
 
 	virtual ~Element() = default;
 
-	virtual void OnRender() = 0;
+	virtual void OnRender();
+	virtual void OnClick() = 0;
 
 	inline std::string GetLabel() const { return m_Label; }
 	inline std::string GetTextureName() const { return m_TextureName; }
@@ -27,4 +28,8 @@ protected:
 	float m_Width;
 	float m_Height;
 	EventCallbackFn m_EventCallback;
+
+	// XBDM related members
+	bool m_Success = true; // Gets set to false whenever an XBDM operation related to the element fails
+	std::string m_ErrorMessage; // Gets printed in a modal window whenever an XBDM operation related to the element fails
 };
