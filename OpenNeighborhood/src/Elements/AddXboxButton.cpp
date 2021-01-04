@@ -20,7 +20,7 @@ void AddXboxButton::OnRender()
 	ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-	bool xboxCreationSuccess = true;
+	bool success = true;
 
 	if (ImGui::BeginPopupModal("Add Xbox 360 ?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
@@ -72,9 +72,9 @@ void AddXboxButton::OnRender()
 			ipAddress << bytes[0] << "." << bytes[1] << "." << bytes[2] << "." << bytes[3];
 			
 			std::string consoleName;
-			xboxCreationSuccess = XboxManager::CreateConsole(ipAddress.str(), consoleName);
+			success = XboxManager::CreateConsole(ipAddress.str(), consoleName);
 
-			if (xboxCreationSuccess)
+			if (success)
 				CreateXbox(consoleName, ipAddress.str());
 
 			ImGui::CloseCurrentPopup();
@@ -89,7 +89,7 @@ void AddXboxButton::OnRender()
 		ImGui::EndPopup();
 	}
 
-	if (!xboxCreationSuccess)
+	if (!success)
 	{
 		ImGui::OpenPopup("Connection failed!");
 
@@ -110,9 +110,9 @@ void AddXboxButton::OnRender()
 
 void AddXboxButton::CreateXbox(const std::string& consoleName, const std::string& ipAddress)
 {
-	Ref<std::vector<Ref<Element>>> xboxVector = CreateRef<std::vector<Ref<Element>>>();
-	xboxVector->emplace_back(CreateRef<Xbox>(consoleName, ipAddress));
-	ContentsChangeEvent event(xboxVector, true);
+	Ref<std::vector<Ref<Element>>> xboxElement = CreateRef<std::vector<Ref<Element>>>();
+	xboxElement->emplace_back(CreateRef<Xbox>(consoleName, ipAddress));
+	ContentsChangeEvent event(xboxElement, true);
 	m_EventCallback(event);
 
 	mINI::INIFile configFile("OpenNeighborhood.ini");
