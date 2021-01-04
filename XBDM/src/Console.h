@@ -18,16 +18,13 @@ namespace XBDM {
 		bool OpenConnection();
 		bool CloseConnection();
 
-		std::string GetConsoleName();
-		std::vector<Drive> GetDrives();
-		std::vector<FileEntry> GetDirectoryContents(const std::string& directoryPath);
+		std::string GetConsoleName(bool* success);
+		std::vector<Drive> GetDrives(bool* success);
+		std::vector<FileEntry> GetDirectoryContents(const std::string& directoryPath, bool* success);
 	private:
 		bool m_Connected = false;
 		std::string m_IpAddress;
 		SOCKET m_Socket;
-
-		std::string m_ConsoleName;
-		std::vector<Drive> m_Drives;
 
 		void CleanupSocket();
 		void CloseSocket();
@@ -42,8 +39,8 @@ namespace XBDM {
 		bool ReceiveResponse(std::string& response, ResponseStatus& status, DWORD responseLength = 0x400, DWORD statusLength = -1);
 		bool ReceiveTimeout(char* buffer, int length, int flags, DWORD& bytesReceived);
 
-		DWORD GetIntegerProperty(std::string& response, const std::string& propertyName, bool& ok, bool hex, bool update = false);
-		std::string GetStringProperty(std::string& response, const std::string& propertyName, bool& ok, bool update = false);
+		DWORD GetIntegerProperty(std::string& response, const std::string& propertyName, bool* success, bool hex, bool update = false);
+		std::string GetStringProperty(std::string& response, const std::string& propertyName, bool* success, bool update = false);
 
 		void SleepFor(DWORD milliseconds);
 	};

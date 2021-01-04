@@ -93,47 +93,44 @@ namespace XBDM {
 		return true;
 	}
 
-	std::string Console::GetConsoleName()
+	std::string Console::GetConsoleName(bool* success)
 	{
-		if (m_ConsoleName == "")
-		{
-			SendCommand("dbgname", m_ConsoleName);
-		}
-		return m_ConsoleName;
+		std::string consoleName;
+		*success = SendCommand("dbgname", consoleName);
+		
+		return consoleName;
 	}
 
-	std::vector<Drive> Console::GetDrives()
+	std::vector<Drive> Console::GetDrives(bool* success)
 	{
-		if (m_Drives.size() != 0)
-			return m_Drives;
-
+		std::vector<Drive> drives;
 		std::string response;
 		SendCommand("drivelist", response);
 
 		// get all of the drive names from the response
-		bool ok = true;
-		while (ok)
+		*success = true;
+		while (*success)
 		{
-			std::string driveName = GetStringProperty(response, "drivename", ok, true);
+			std::string driveName = GetStringProperty(response, "drivename", success, true);
 
-			if (ok)
+			if (*success)
 			{
 				Drive d = { driveName, 0, 0, 0 };
-				m_Drives.push_back(d);
+				drives.push_back(d);
 			}
 		}
 
 		// now that all of the drive names are loaded, let's get the drive size information
-		for (Drive& drive : m_Drives)
+		for (Drive& drive : drives)
 		{
 			SendCommand("drivefreespace name=\"" + drive.Name + ":\\\"", response);
 
-			drive.FreeBytesAvailable = ((UINT64)GetIntegerProperty(response, "freetocallerhi", ok, true) << 32) |
-				(UINT64)GetIntegerProperty(response, "freetocallerlo", ok, true);
-			drive.TotalBytes = ((UINT64)GetIntegerProperty(response, "totalbyteshi", ok, true) << 32) |
-				(UINT64)GetIntegerProperty(response, "totalbyteslo", ok, true);
-			drive.TotalFreeBytes = ((UINT64)GetIntegerProperty(response, "totalfreebyteshi", ok, true) << 32) |
-				(UINT64)GetIntegerProperty(response, "totalfreebyteslo", ok, true);
+			drive.FreeBytesAvailable = ((UINT64)GetIntegerProperty(response, "freetocallerhi", success, true) << 32) |
+				(UINT64)GetIntegerProperty(response, "freetocallerlo", success, true);
+			drive.TotalBytes = ((UINT64)GetIntegerProperty(response, "totalbyteshi", success, true) << 32) |
+				(UINT64)GetIntegerProperty(response, "totalbyteslo", success, true);
+			drive.TotalFreeBytes = ((UINT64)GetIntegerProperty(response, "totalfreebyteshi", success, true) << 32) |
+				(UINT64)GetIntegerProperty(response, "totalfreebyteslo", success, true);
 
 			// get the friendly name for volume, these are from neighborhood
 			if (drive.Name == "DEVKIT" || drive.Name == "E")
@@ -148,23 +145,19 @@ namespace XBDM {
 				drive.FriendlyName = "Volume (" + drive.Name + ":)";
 		}
 
-		return m_Drives;
+		return drives;
 	}
 
-	std::vector<FileEntry> Console::GetDirectoryContents(const std::string& directoryPath)
+	std::vector<FileEntry> Console::GetDirectoryContents(const std::string& directoryPath, bool* success)
 	{
-		bool success;
 		std::string response;
-		success = SendCommand("dirlist name=\"" + directoryPath + "\"", response);
+		*success = SendCommand("dirlist name=\"" + directoryPath + "\"", response);
 
 		std::vector<FileEntry> files;
-		if (!success || response.find("file not found\r\n") == 0)
-		{
-			success = false;
+		if (!*success || response.find("file not found\r\n") == 0)
 			return files;
-		}
 
-		while (success)
+		while (*success)
 		{
 			FileEntry entry;
 
@@ -174,7 +167,7 @@ namespace XBDM {
 			entry.ModifiedTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(response, "changehi", success, true, true) << 32) | GetIntegerProperty(response, "changelo", success, true, true));
 			entry.IsDirectory = response.find(" directory") == 0;
 
-			if (success)
+			if (*success)
 				files.push_back(entry);
 		}
 
@@ -338,7 +331,7 @@ namespace XBDM {
 		return true;
 	}
 
-	DWORD Console::GetIntegerProperty(std::string& response, const std::string& propertyName, bool& ok, bool hex, bool update)
+	DWORD Console::GetIntegerProperty(std::string& response, const std::string& propertyName, bool* success, bool hex, bool update)
 	{
 		// all of the properties are like this: NAME=VALUE
 		size_t startIndex = response.find(propertyName) + propertyName.size() + 1;
@@ -348,7 +341,7 @@ namespace XBDM {
 
 		if (response.find(propertyName) == std::string::npos)
 		{
-			ok = false;
+			*success = false;
 			return 0;
 		}
 
@@ -360,11 +353,13 @@ namespace XBDM {
 
 		if (update)
 			response = response.substr(endIndex);
-		ok = true;
+
+		*success = true;
+
 		return toReturn;
 	}
 
-	std::string Console::GetStringProperty(std::string& response, const std::string& propertyName, bool& ok, bool update)
+	std::string Console::GetStringProperty(std::string& response, const std::string& propertyName, bool* success, bool update)
 	{
 		// all string properties are like this: NAME="VALUE"
 		size_t startIndex = response.find(propertyName) + propertyName.size() + 2;
@@ -372,7 +367,7 @@ namespace XBDM {
 
 		if (response.find(propertyName) == std::string::npos)
 		{
-			ok = false;
+			*success = false;
 			return "";
 		}
 
@@ -380,7 +375,7 @@ namespace XBDM {
 
 		if (update)
 			response = response.substr(endIndex);
-		ok = true;
+		*success = true;
 		return toReturn;
 	}
 
