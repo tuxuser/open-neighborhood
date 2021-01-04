@@ -31,7 +31,7 @@ void OpenNeighborhood::OnEvent(Event& event)
 		panel->OnEvent(event);
 }
 
-void OpenNeighborhood::OnUpdate(Timestep ts)
+void OpenNeighborhood::OnUpdate()
 {
 	UI::BeginFrame();
 

@@ -12,7 +12,7 @@ public:
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
-	virtual void OnUpdate(Timestep timestep) override;
+	virtual void OnUpdate() override;
 	virtual void OnEvent(Event& event) override;
 private:
 	Stack<Panel*> m_PanelStack;

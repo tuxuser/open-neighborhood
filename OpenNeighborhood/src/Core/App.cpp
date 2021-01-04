@@ -33,10 +33,8 @@ void App::Run()
 {
 	while (m_Running)
 	{
-		Timestep ts;
-
 		for (Layer* layer : m_LayerStack)
-			layer->OnUpdate(ts);
+			layer->OnUpdate();
 
 		m_Window->OnUpdate();
 	}
