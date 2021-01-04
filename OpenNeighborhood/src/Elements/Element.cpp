@@ -30,7 +30,10 @@ void Element::OnRender()
 		ImGui::Text(m_ErrorMessage.c_str());
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			m_Success = true;
 			ImGui::CloseCurrentPopup();
+		}
 
 		ImGui::EndPopup();
 	}
