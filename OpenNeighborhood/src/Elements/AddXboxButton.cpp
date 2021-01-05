@@ -106,8 +106,6 @@ void AddXboxButton::OnRender()
 
 		ImGui::EndPopup();
 	}
-
-	ImGui::ShowDemoWindow();
 }
 
 void AddXboxButton::OnClick()
