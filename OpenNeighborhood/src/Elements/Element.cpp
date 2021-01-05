@@ -10,13 +10,15 @@ Element::Element(const std::string& label, const std::string& textureName, const
 		TextureManager::AddTexture(textureName, WORKING_DIR"assets/icons/" + textureName + ".png");
 
 	auto texture = TextureManager::GetTexture(textureName);
-	m_Width = texture->GetWidth() * 3.0f;
+	m_Width = texture->GetWidth() * 3;
 	m_Height = texture->GetHeight();
 }
 
 void Element::OnRender()
 {
-	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(80.0f, 80.0f), ImVec2(m_Width, m_Height), m_Label.c_str(), ImVec2(m_Padding, m_Padding)))
+	auto texture = TextureManager::GetTexture(m_TextureName);
+
+	if (ImGui::ImageButtonWithText((void*)(intptr_t)texture->GetTextureID(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()), ImVec2((float)m_Width, (float)m_Height), m_Label.c_str(), ImVec2(m_Padding, m_Padding)))
 		OnClick();
 
 	if (!m_Success)

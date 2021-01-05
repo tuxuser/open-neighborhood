@@ -14,7 +14,9 @@ AddXboxButton::AddXboxButton()
 
 void AddXboxButton::OnRender()
 {
-	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(80.0f, 80.0f), ImVec2(m_Width, m_Height), m_Label.c_str(), ImVec2(m_Padding, m_Padding)))
+	auto texture = TextureManager::GetTexture(m_TextureName);
+
+	if (ImGui::ImageButtonWithText((void*)(intptr_t)texture->GetTextureID(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()), ImVec2((float)m_Width, (float)m_Height), m_Label.c_str(), ImVec2(m_Padding, m_Padding)))
 		OnClick();
 
 	ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
