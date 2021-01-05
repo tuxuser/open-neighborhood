@@ -28,7 +28,7 @@ bool ImGui::ImageButtonWithText(ImTextureID userTextureID, const ImVec2& imageSi
 
     ImRect offset = totalRect;
     offset.Min.x = imageRect.Max.x + padding.x;
-    RenderTextWrapped(offset.Min + padding, label, NULL, totalSize.x - imageSize.x - padding.x * 2.0f);
+    RenderTextWrapped(offset.Min + padding * 2.0f, label, NULL, totalSize.x - imageSize.x - padding.x * 2.0f);
 
     return pressed;
 }
