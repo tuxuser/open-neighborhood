@@ -3,13 +3,15 @@
 
 #include "Render/TextureManager.h"
 
-Element::Element(const std::string& label, const std::string& textureName, float width, float height, const std::string& errorMessage)
-	: m_Label(label), m_TextureName(textureName), m_Width(width), m_Height(height), m_ErrorMessage(errorMessage)
+Element::Element(const std::string& label, const std::string& textureName, const std::string& errorMessage)
+	: m_Label(label), m_TextureName(textureName), m_ErrorMessage(errorMessage)
 {
-	if (TextureManager::TextureExists(textureName))
-		return;
+	if (!TextureManager::TextureExists(textureName))
+		TextureManager::AddTexture(textureName, WORKING_DIR"assets/icons/" + textureName + ".png");
 
-	TextureManager::AddTexture(textureName, WORKING_DIR"assets/icons/" + textureName + ".png");
+	auto texture = TextureManager::GetTexture(textureName);
+	m_Width = texture->GetWidth() * 3.0f;
+	m_Height = texture->GetHeight();
 }
 
 void Element::OnRender()

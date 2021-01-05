@@ -7,7 +7,7 @@
 #include "Elements/Drive.h"
 
 Xbox::Xbox(const std::string& label, const std::string& ipAddress)
-	: m_IpAddress(ipAddress), Element(label, "xbox", 240.0f, 80.0f, "Couldn't find console!") {}
+	: m_IpAddress(ipAddress), Element(label, "xbox", "Couldn't find console!") {}
 
 void Xbox::OnClick()
 {

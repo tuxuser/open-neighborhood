@@ -10,7 +10,7 @@
 #include "Elements/Xbox.h"
 
 AddXboxButton::AddXboxButton() 
-	: Element("Add Xbox 360", "addXboxButton", 240.0f, 80.0f, "Couldn't find console!") {}
+	: Element("Add Xbox 360", "addXboxButton", "Couldn't find console!") {}
 
 void AddXboxButton::OnRender()
 {
