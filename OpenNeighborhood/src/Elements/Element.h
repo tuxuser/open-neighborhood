@@ -27,6 +27,7 @@ protected:
 	std::string m_TextureName;
 	float m_Width;
 	float m_Height;
+	float m_Padding = 10.0f;
 	EventCallbackFn m_EventCallback;
 
 	// XBDM related members

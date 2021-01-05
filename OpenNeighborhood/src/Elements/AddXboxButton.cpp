@@ -10,11 +10,11 @@
 #include "Elements/Xbox.h"
 
 AddXboxButton::AddXboxButton() 
-	: Element("Add Xbox 360", "addXboxButton", 100.0f, 100.0f, "Couldn't find console!") {}
+	: Element("Add Xbox 360", "addXboxButton", 240.0f, 80.0f, "Couldn't find console!") {}
 
 void AddXboxButton::OnRender()
 {
-	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(m_Width, m_Height), m_Label.c_str()))
+	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(80.0f, 80.0f), ImVec2(m_Width, m_Height), m_Label.c_str(), ImVec2(m_Padding, m_Padding)))
 		OnClick();
 
 	ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
@@ -104,6 +104,8 @@ void AddXboxButton::OnRender()
 
 		ImGui::EndPopup();
 	}
+
+	ImGui::ShowDemoWindow();
 }
 
 void AddXboxButton::OnClick()

@@ -14,7 +14,7 @@ Element::Element(const std::string& label, const std::string& textureName, float
 
 void Element::OnRender()
 {
-	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(m_Width, m_Height), m_Label.c_str()))
+	if (ImGui::ImageButtonWithText((void*)(intptr_t)TextureManager::GetTexture(m_TextureName)->GetTextureID(), ImVec2(80.0f, 80.0f), ImVec2(m_Width, m_Height), m_Label.c_str(), ImVec2(m_Padding, m_Padding)))
 		OnClick();
 
 	if (!m_Success)
