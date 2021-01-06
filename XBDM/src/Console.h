@@ -39,6 +39,7 @@ namespace XBDM {
 		bool ReceiveResponse(std::string& response, ResponseStatus& status, DWORD responseLength = 0x400, DWORD statusLength = -1);
 		bool ReceiveTimeout(char* buffer, int length, int flags, DWORD& bytesReceived);
 
+		std::vector<std::string> SplitResponse(const std::string& response, const std::string& delimiter);
 		DWORD GetIntegerProperty(std::string& response, const std::string& propertyName, bool* success, bool hex, bool update = false);
 		std::string GetStringProperty(std::string& response, const std::string& propertyName, bool* success, bool update = false);
 

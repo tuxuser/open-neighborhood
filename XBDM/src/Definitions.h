@@ -43,7 +43,7 @@ namespace XBDM
 		UINT64 Size;
 		time_t CreationTime;
 		time_t ModifiedTime;
-
+		bool IsXEX;
 		bool IsDirectory;
 	};
 };

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Console.h"
 
+#include <filesystem>
+
 namespace XBDM {
 	Console::Console()
 		: m_Socket(INVALID_SOCKET) {}
@@ -153,19 +155,24 @@ namespace XBDM {
 		std::string response;
 		*success = SendCommand("dirlist name=\"" + directoryPath + "\"", response);
 
+		std::vector<std::string> lines = SplitResponse(response, "\r\n");
+
 		std::vector<FileEntry> files;
 		if (!*success || response.find("file not found\r\n") == 0)
 			return files;
 
-		while (*success)
+		for (auto& line : lines)
 		{
 			FileEntry entry;
 
-			entry.Name = GetStringProperty(response, "name", success, true);
-			entry.Size = ((UINT64)GetIntegerProperty(response, "sizehi", success, true, true) << 32) | GetIntegerProperty(response, "sizelo", success, true, true);
-			entry.CreationTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(response, "createhi", success, true, true) << 32) | GetIntegerProperty(response, "createlo", success, true, true));
-			entry.ModifiedTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(response, "changehi", success, true, true) << 32) | GetIntegerProperty(response, "changelo", success, true, true));
-			entry.IsDirectory = response.find(" directory") == 0;
+			entry.Name = GetStringProperty(line, "name", success);
+			entry.Size = ((UINT64)GetIntegerProperty(line, "sizehi", success, true) << 32) | GetIntegerProperty(line, "sizelo", success, true);
+			entry.CreationTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(line, "createhi", success, true) << 32) | GetIntegerProperty(line, "createlo", success, true));
+			entry.ModifiedTime = FILETIME_TO_TIMET(((UINT64)GetIntegerProperty(line, "changehi", success, true) << 32) | GetIntegerProperty(line, "changelo", success, true));
+			entry.IsDirectory = line.find(" directory") != std::string::npos;
+
+			std::filesystem::path filePath(entry.Name);
+			entry.IsXEX = filePath.extension() == ".xex";
 
 			if (*success)
 				files.push_back(entry);
@@ -329,6 +336,26 @@ namespace XBDM {
 		if (bytesReceived == SOCKET_ERROR)
 			return false;
 		return true;
+	}
+
+	std::vector<std::string> Console::SplitResponse(const std::string& response, const std::string& delimiter)
+	{
+		std::vector<std::string> result;
+		std::string responseCopy = response;
+		size_t pos = 0;
+		std::string line;
+
+		while ((pos = responseCopy.find(delimiter)) != std::string::npos)
+		{
+			line = responseCopy.substr(0, pos);
+
+			if (line != ".")
+				result.push_back(line);
+
+			responseCopy.erase(0, pos + delimiter.length());
+		}
+
+		return result;
 	}
 
 	DWORD Console::GetIntegerProperty(std::string& response, const std::string& propertyName, bool* success, bool hex, bool update)
