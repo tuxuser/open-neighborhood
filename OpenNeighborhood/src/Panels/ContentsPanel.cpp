@@ -64,6 +64,9 @@ void ContentsPanel::OnRender()
 	}
 
 	ImGui::End();
+
+	if (!m_ContentsChangeEventQueue.empty())
+		InjectNewElements();
 }
 
 void ContentsPanel::OnEvent(Event& event)
@@ -76,6 +79,20 @@ void ContentsPanel::OnEvent(Event& event)
 
 bool ContentsPanel::OnContentsChange(ContentsChangeEvent& event)
 {
+	m_ContentsChangeEventQueue.push(event);
+
+	return true;
+}
+
+void ContentsPanel::UpdateEventCallbacks()
+{
+	for (auto& element : m_Elements)
+		element->SetEventCallback(BIND_EVENT_FN(ContentsPanel::OnEvent));
+}
+
+void ContentsPanel::InjectNewElements()
+{
+	ContentsChangeEvent& event = m_ContentsChangeEventQueue.front();
 	if (event.Append())
 	{
 		m_Elements.reserve(m_Elements.size() + event.GetElements()->size());
@@ -85,12 +102,5 @@ bool ContentsPanel::OnContentsChange(ContentsChangeEvent& event)
 		m_Elements = *event.GetElements();
 
 	UpdateEventCallbacks();
-
-	return true;
-}
-
-void ContentsPanel::UpdateEventCallbacks()
-{
-	for (auto& element : m_Elements)
-		element->SetEventCallback(BIND_EVENT_FN(ContentsPanel::OnEvent));
+	m_ContentsChangeEventQueue.pop();
 }
