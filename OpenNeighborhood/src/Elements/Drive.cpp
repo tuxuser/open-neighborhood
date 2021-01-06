@@ -13,7 +13,7 @@ void Drive::OnClick()
 	std::transform(m_Data.Name.begin(), m_Data.Name.end(), m_Data.Name.begin(), [](unsigned char c) { return std::tolower(c); });
 
 	XBDM::Console xbox = XboxManager::GetConsole();
-	std::vector<XBDM::FileEntry> files = xbox.GetDirectoryContents(m_Data.Name + ":\\", &m_Success);
+	std::vector<XBDM::FileEntry> files = xbox.GetDirectoryContents(XboxManager::GetCurrentLocation() + m_Data.Name + ":\\", &m_Success);
 
 	if (m_Success)
 	{
@@ -24,5 +24,7 @@ void Drive::OnClick()
 
 		ContentsChangeEvent event(fileElements);
 		m_EventCallback(event);
+
+		XboxManager::GoToDirectory(m_Data.Name);
 	}
 }
