@@ -12,4 +12,6 @@ public:
 	virtual void OnClick() override;
 private:
 	XBDM::FileEntry m_Data;
+
+	void OpenDirectory();
 };
