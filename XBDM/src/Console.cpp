@@ -73,10 +73,10 @@ namespace XBDM {
 			return false;
 		}
 
-		// read the crap placed on teh queue, should be "201- connected"
-		BYTE buffer[0x80] = { 0 };
+		// read the crap placed on the queue, should be "201- connected"
+		char buffer[0x80] = { 0 };
 		ReceiveTextBuffer(buffer, 0x80);
-		DWORD cmp = strcmp((char*)buffer, "201- connected\r\n");
+		DWORD cmp = strcmp(buffer, "201- connected\r\n");
 
 		return m_Connected = (cmp == 0);
 
@@ -98,8 +98,8 @@ namespace XBDM {
 	std::string Console::GetConsoleName(bool* success)
 	{
 		std::string consoleName;
-		*success = SendCommand("dbgname", consoleName);
-		
+		*success = SendCommand("dbgname", &consoleName);
+
 		return consoleName;
 	}
 
@@ -107,25 +107,24 @@ namespace XBDM {
 	{
 		std::vector<Drive> drives;
 		std::string response;
-		SendCommand("drivelist", response);
+		*success = SendCommand("drivelist", &response);
 
-		// get all of the drive names from the response
-		*success = true;
-		while (*success)
+		if (!*success)
+			return drives;
+
+		std::vector<std::string> lines = SplitResponse(response, "\r\n");
+
+		for (auto& line : lines)
 		{
-			std::string driveName = GetStringProperty(response, "drivename", success, true);
+			std::string driveName = GetStringProperty(line, "drivename", success);
 
-			if (*success)
-			{
-				Drive d = { driveName, 0, 0, 0 };
-				drives.push_back(d);
-			}
-		}
+			if (!*success)
+				break;
 
-		// now that all of the drive names are loaded, let's get the drive size information
-		for (Drive& drive : drives)
-		{
-			SendCommand("drivefreespace name=\"" + drive.Name + ":\\\"", response);
+			Drive drive;
+			drive.Name = driveName;
+
+			SendCommand("drivefreespace name=\"" + drive.Name + ":\\\"", &response);
 
 			drive.FreeBytesAvailable = ((UINT64)GetIntegerProperty(response, "freetocallerhi", success, true) << 32) |
 				(UINT64)GetIntegerProperty(response, "freetocallerlo", success, true);
@@ -133,6 +132,9 @@ namespace XBDM {
 				(UINT64)GetIntegerProperty(response, "totalbyteslo", success, true);
 			drive.TotalFreeBytes = ((UINT64)GetIntegerProperty(response, "totalfreebyteshi", success, true) << 32) |
 				(UINT64)GetIntegerProperty(response, "totalfreebyteslo", success, true);
+
+			if (!*success)
+				break;
 
 			// get the friendly name for volume, these are from neighborhood
 			if (drive.Name == "DEVKIT" || drive.Name == "E")
@@ -143,8 +145,12 @@ namespace XBDM {
 				drive.FriendlyName = "Xbox360 Dashboard Volume (" + drive.Name + ":)";
 			else if (drive.Name == "Z")
 				drive.FriendlyName = "Devkit Drive (" + drive.Name + ":)";
+			else if (drive.Name == "D" || drive.Name == "GAME")
+				drive.FriendlyName = "Active Title Media (" + drive.Name + ":)";
 			else
 				drive.FriendlyName = "Volume (" + drive.Name + ":)";
+
+			drives.push_back(drive);
 		}
 
 		return drives;
@@ -153,7 +159,7 @@ namespace XBDM {
 	std::vector<FileEntry> Console::GetDirectoryContents(const std::string& directoryPath, bool* success)
 	{
 		std::string response;
-		*success = SendCommand("dirlist name=\"" + directoryPath + "\"", response);
+		*success = SendCommand("dirlist name=\"" + directoryPath + "\"", &response);
 
 		std::vector<std::string> lines = SplitResponse(response, "\r\n");
 
@@ -174,8 +180,10 @@ namespace XBDM {
 			std::filesystem::path filePath(entry.Name);
 			entry.IsXEX = filePath.extension() == ".xex";
 
-			if (*success)
-				files.push_back(entry);
+			if (!*success)
+				break;
+
+			files.push_back(entry);
 		}
 
 		return files;
@@ -197,9 +205,9 @@ namespace XBDM {
 #endif
 	}
 
-	bool Console::SendBinary(const BYTE* buffer, DWORD length)
+	bool Console::SendBinary(const char* buffer, DWORD length)
 	{
-		int iResult = send(m_Socket, (char*)buffer, length, 0);
+		int iResult = send(m_Socket, buffer, length, 0);
 		if (iResult == SOCKET_ERROR)
 		{
 			CloseSocket();
@@ -212,34 +220,27 @@ namespace XBDM {
 	bool Console::SendCommand(const std::string& command)
 	{
 		std::string response;
-		return SendCommand(command, response);
+		return SendCommand(command, &response);
 	}
 
-	bool Console::SendCommand(const std::string& command, std::string& response, DWORD responseLength, DWORD statusLength)
+	bool Console::SendCommand(const std::string& command, std::string* response)
 	{
-		ResponseStatus status;
-		return SendCommand(command, response, status, responseLength, statusLength);
-	}
-
-	bool Console::SendCommand(const std::string& command, std::string& response, ResponseStatus& status, DWORD responseLength, DWORD statusLength)
-	{
-		response = "";
+		*response = "";
 
 		// send the command to the devkit
 		std::string fullCommand = command + "\r\n";
-		if (!SendBinary((BYTE*)fullCommand.c_str(), (DWORD)fullCommand.length()))
+		if (!SendBinary(fullCommand.c_str(), (DWORD)fullCommand.length()))
 			return false;
 
 		// time for the console to compile the response
-		SleepFor(20);
+		SleepFor(10);
 
-		return ReceiveResponse(response, status, responseLength, statusLength);
+		return ReceiveResponse(response);
 	}
 
-	bool Console::ReceiveTextBuffer(BYTE* buffer, DWORD length)
+	bool Console::ReceiveTextBuffer(char* buffer, DWORD length)
 	{
-		DWORD bytesReceived;
-		if (!ReceiveTimeout((char*)buffer, length, MSG_PEEK, bytesReceived))
+		if (!ReceiveBinary(buffer, length, MSG_PEEK))
 			return false;
 
 		DWORD lenToGet = 0;
@@ -253,89 +254,85 @@ namespace XBDM {
 
 		// now actually read the bytes off the queue
 		ZeroMemory(buffer, length);
-		if (!ReceiveTimeout((char*)buffer, lenToGet, 0, bytesReceived))
-			return false;
-		return true;
+		return ReceiveBinary(buffer, lenToGet);
 	}
 
-	bool Console::ReceiveBinary(BYTE* buffer, DWORD length, DWORD& bytesRecieved)
-	{
-		return ReceiveTimeout((char*)buffer, length, 0, bytesRecieved);
-	}
-
-	bool Console::ReceiveResponse(std::string& response, ResponseStatus& status, DWORD responseLength, DWORD statusLength)
+	bool Console::ReceiveResponse(std::string* response)
 	{
 		// get the response from the console, first just read the status
-		std::unique_ptr<BYTE[]> buffer(new BYTE[responseLength]);
-		ZeroMemory(buffer.get(), responseLength);
+		char buffer[0x1000];
 
 		// read the status
-		DWORD bytesRecieved;
-		if (!ReceiveBinary(buffer.get(), 5, bytesRecieved))
+		if (!ReceiveBinary(buffer, 5))
 			return false;
 
 		// get the status from the response
 		int statusInt;
-		std::istringstream(std::string((char*)buffer.get()).substr(0, 3)) >> statusInt;
-		status = (ResponseStatus)statusInt;
+		std::istringstream(std::string(buffer).substr(0, 3)) >> statusInt;
+
+		int count = 0;
 
 		// parse the response
 		switch ((ResponseStatus)statusInt)
 		{
-			case ResponseStatus::OK:
-			case ResponseStatus::ReadyToAcceptData:
-				if (!ReceiveTextBuffer(buffer.get(), responseLength))
-					return false;
-				response = std::string((char*)buffer.get());
-				break;
-
-			case ResponseStatus::Multiline:
-				if (!ReceiveBinary(buffer.get(), (statusLength == -1) ? 0x1C : statusLength, bytesRecieved))
-					return false;
-				ZeroMemory(buffer.get(), responseLength);
-
-				// the end of the response always contains "\r\n." or ".\r\n"
-				while (response.find("\r\n.") == std::string::npos && response.find(".\r\n") == std::string::npos)
-				{
-					ZeroMemory(buffer.get(), 0x400);
-
-					if (!ReceiveTextBuffer(buffer.get(), 0x400))
-						return false;
-					response += std::string((char*)buffer.get(), 0x400);
-				}
-				break;
-
-			case ResponseStatus::Binary:
-				// read off "binary response follows"
-				if (!ReceiveBinary(buffer.get(), (statusLength == -1) ? 0x19 : statusLength, bytesRecieved))
-					return false;
-
-				// let the caller deal with reading the stream
-				break;
-
-			case ResponseStatus::Error:
-				if (!ReceiveTextBuffer(buffer.get(), responseLength))
-					return false;
-				response = std::string((char*)buffer.get());
-
-				break;
-			default:
+		case ResponseStatus::OK:
+		case ResponseStatus::ReadyToAcceptData:
+			if (!ReceiveTextBuffer(buffer, sizeof(buffer)))
 				return false;
+
+			*response = std::string(buffer);
+			break;
+
+		case ResponseStatus::Multiline:
+			//This is extremely inconsistent, sometimes it works, sometimes it doesn't.
+			//This is not stable at all.
+
+			// read off "multiline response follows"
+			if (!ReceiveBinary(buffer, 28))
+				return false;
+
+			// the end of the response always contains "\r\n." or ".\r\n"
+			while ((*response).find("\r\n.") == std::string::npos && (*response).find(".\r\n") == std::string::npos)
+			{
+				if (!ReceiveTextBuffer(buffer, sizeof(buffer)))
+					return false;
+
+				*response += std::string(buffer, sizeof(buffer));
+
+				// time for the console to compile the response 
+				SleepFor(10);
+			}
+			break;
+
+		case ResponseStatus::Binary:
+			// read off "binary response follows"
+			if (!ReceiveBinary(buffer, 25))
+				return false;
+
+			// let the caller deal with reading the stream
+			break;
+
+		case ResponseStatus::Error:
+			if (!ReceiveTextBuffer(buffer, sizeof(buffer)))
+				return false;
+
+			*response = std::string(buffer);
+
+			break;
+		default:
+			return false;
 		}
 
 		// trim off the leading and trailing whitespace
-		response.erase(response.begin(), std::find_if(response.begin(), response.end(), [](unsigned char c) { return !std::isspace(c); }));
-		response.erase(std::find_if(response.rbegin(), response.rend(), [](unsigned char c) { return !std::isspace(c); }).base(), response.end());
+		(*response).erase((*response).begin(), std::find_if((*response).begin(), (*response).end(), [](unsigned char c) { return !std::isspace(c); }));
+		(*response).erase(std::find_if((*response).rbegin(), (*response).rend(), [](unsigned char c) { return !std::isspace(c); }).base(), (*response).end());
 
 		return true;
 	}
 
-	bool Console::ReceiveTimeout(char* buffer, int length, int flags, DWORD& bytesReceived)
+	bool Console::ReceiveBinary(char* buffer, int length, int flags)
 	{
-		bytesReceived = recv(m_Socket, buffer, length, flags);
-		if (bytesReceived == SOCKET_ERROR)
-			return false;
-		return true;
+		return recv(m_Socket, buffer, length, flags) != SOCKET_ERROR;
 	}
 
 	std::vector<std::string> Console::SplitResponse(const std::string& response, const std::string& delimiter)
@@ -358,50 +355,45 @@ namespace XBDM {
 		return result;
 	}
 
-	DWORD Console::GetIntegerProperty(std::string& response, const std::string& propertyName, bool* success, bool hex, bool update)
+	DWORD Console::GetIntegerProperty(const std::string& line, const std::string& propertyName, bool* success, bool hex)
 	{
-		// all of the properties are like this: NAME=VALUE
-		size_t startIndex = response.find(propertyName) + propertyName.size() + 1;
-		size_t spaceIndex = response.find(' ', startIndex);
-		size_t crIndex = response.find('\r', startIndex);
-		size_t endIndex = (spaceIndex != -1 && spaceIndex < crIndex) ? spaceIndex : crIndex;
-
-		if (response.find(propertyName) == std::string::npos)
+		if (line.find(propertyName) == std::string::npos)
 		{
 			*success = false;
 			return 0;
 		}
 
+		// all of the properties are like this: NAME=VALUE
+		size_t startIndex = line.find(propertyName) + propertyName.size() + 1;
+		size_t spaceIndex = line.find(' ', startIndex);
+		size_t crIndex = line.find('\r', startIndex);
+		size_t endIndex = (spaceIndex != std::string::npos) ? spaceIndex : crIndex;
+
 		DWORD toReturn;
 		if (hex)
-			std::istringstream(response.substr(startIndex, endIndex - startIndex)) >> std::hex >> toReturn;
+			std::istringstream(line.substr(startIndex, endIndex - startIndex)) >> std::hex >> toReturn;
 		else
-			std::istringstream(response.substr(startIndex, endIndex - startIndex)) >> toReturn;
-
-		if (update)
-			response = response.substr(endIndex);
+			std::istringstream(line.substr(startIndex, endIndex - startIndex)) >> toReturn;
 
 		*success = true;
 
 		return toReturn;
 	}
 
-	std::string Console::GetStringProperty(std::string& response, const std::string& propertyName, bool* success, bool update)
+	std::string Console::GetStringProperty(const std::string& line, const std::string& propertyName, bool* success)
 	{
-		// all string properties are like this: NAME="VALUE"
-		size_t startIndex = response.find(propertyName) + propertyName.size() + 2;
-		size_t endIndex = response.find('"', startIndex);
-
-		if (response.find(propertyName) == std::string::npos)
+		if (line.find(propertyName) == std::string::npos)
 		{
 			*success = false;
 			return "";
 		}
 
-		std::string toReturn = response.substr(startIndex, endIndex - startIndex);
+		// all string properties are like this: NAME="VALUE"
+		size_t startIndex = line.find(propertyName) + propertyName.size() + 2;
+		size_t endIndex = line.find('"', startIndex);
 
-		if (update)
-			response = response.substr(endIndex);
+		std::string toReturn = line.substr(startIndex, endIndex - startIndex);
+
 		*success = true;
 		return toReturn;
 	}

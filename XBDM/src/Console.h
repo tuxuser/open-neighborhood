@@ -29,19 +29,17 @@ namespace XBDM {
 		void CleanupSocket();
 		void CloseSocket();
 
-		bool SendBinary(const BYTE* buffer, DWORD length);
+		bool SendBinary(const char* buffer, DWORD length);
 		bool SendCommand(const std::string& command);
-		bool SendCommand(const std::string& command, std::string& response, DWORD responseLength = 0x400, DWORD statusLength = -1);
-		bool SendCommand(const std::string& command, std::string& response, ResponseStatus& status, DWORD responseLength = 0x400, DWORD statusLength = -1);
+		bool SendCommand(const std::string& command, std::string* response);
 
-		bool ReceiveTextBuffer(BYTE* buffer, DWORD length);
-		bool ReceiveBinary(BYTE* buffer, DWORD length, DWORD& bytesRecieved);
-		bool ReceiveResponse(std::string& response, ResponseStatus& status, DWORD responseLength = 0x400, DWORD statusLength = -1);
-		bool ReceiveTimeout(char* buffer, int length, int flags, DWORD& bytesReceived);
+		bool ReceiveTextBuffer(char* buffer, DWORD length);
+		bool ReceiveResponse(std::string* response);
+		bool ReceiveBinary(char* buffer, int length, int flags = 0);
 
 		std::vector<std::string> SplitResponse(const std::string& response, const std::string& delimiter);
-		DWORD GetIntegerProperty(std::string& response, const std::string& propertyName, bool* success, bool hex, bool update = false);
-		std::string GetStringProperty(std::string& response, const std::string& propertyName, bool* success, bool update = false);
+		DWORD GetIntegerProperty(const std::string& line, const std::string& propertyName, bool* success, bool hex);
+		std::string GetStringProperty(const std::string& line, const std::string& propertyName, bool* success);
 
 		void SleepFor(DWORD milliseconds);
 	};
