@@ -12,6 +12,12 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
       - run: vendor/premake/bin/premake5.exe vs2019
       - run: msbuild /p:Configuration=${{ matrix.config }}
+      - name: Upload Artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenNeighborhood-windows
+          path: bin\Release-windows\
 
   linux:
     runs-on: ubuntu-latest
@@ -26,6 +32,12 @@ jobs:
           sudo apt install -y xorg-dev
       - run: ./vendor/premake/bin/premake5 gmake2
       - run: make config=${{ matrix.config }}
+      - name: Upload Artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenNeighborhood-linux
+          path: bin/Release-linux/
 
   macos:
     runs-on: macos-latest
@@ -36,3 +48,9 @@ jobs:
       - uses: actions/checkout@v2
       - run: ./vendor/premake/bin/premake5_macos gmake2
       - run: make config=${{ matrix.config }}
+      - name: Upload Artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenNeighborhood-macos
+          path: bin/Release-macosx/
