@@ -1,0 +1,29 @@
+name: Build
+on: [push, pull_request]
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - run: vendor/premake/bin/premake5.exe vs2019
+      - run: msbuild
+  
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y xorg-dev
+      - run: ./vendor/premake/bin/premake5 gmake2
+      - run: make
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./vendor/premake/bin/premake5_macos gmake2
+      - run: make
