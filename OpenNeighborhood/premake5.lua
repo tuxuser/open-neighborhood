@@ -54,7 +54,9 @@ project "OpenNeighborhood"
 			"X11",
 			"pthread",
 			"dl",
-			"stdc++fs"
+			"stdc++fs",
+			"GLEW",
+			"GL"
 		}
 
 	filter "configurations:Debug"
