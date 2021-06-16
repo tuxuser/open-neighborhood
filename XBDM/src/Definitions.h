@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 
 #ifndef _WIN32
 	typedef uint8_t     BYTE;
@@ -15,34 +14,22 @@
 	typedef int SOCKET;
 #endif
 
-#define FILETIME_TO_TIMET(time) ((time_t)(time / 10000000L - 11644473600L))
-
 namespace XBDM
 {
-	enum class ResponseStatus
-	{
-		OK = 200,
-		Multiline = 202,
-		Binary = 203,
-		ReadyToAcceptData = 204,
-		Error = 405
-	};
-
 	struct Drive
 	{
 		std::string Name;
 		UINT64 FreeBytesAvailable;
 		UINT64 TotalBytes;
 		UINT64 TotalFreeBytes;
+		UINT64 TotalUsedBytes;
 		std::string FriendlyName;
 	};
 
-	struct FileEntry
+	struct File
 	{
 		std::string Name;
 		UINT64 Size;
-		time_t CreationTime;
-		time_t ModifiedTime;
 		bool IsXEX;
 		bool IsDirectory;
 	};

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <memory>
 #include <algorithm>
+#include <filesystem>
 
 #ifdef _WIN32
 	#include <winsock2.h>
