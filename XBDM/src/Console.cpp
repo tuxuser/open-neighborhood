@@ -131,6 +131,9 @@ namespace XBDM
 
 		std::vector<std::string> lines = SplitResponse(contentResponse, "\r\n");
 
+		if (lines[0][0] == '4')
+			throw std::invalid_argument("Invalid directory path: " + directoryPath);
+
 		for (auto& line : lines)
 		{
 			std::string fileName = GetStringProperty(line, "name");

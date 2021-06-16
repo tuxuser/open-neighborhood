@@ -6,6 +6,7 @@
 #include <memory>
 #include <algorithm>
 #include <filesystem>
+#include <exception>
 
 #ifdef _WIN32
 	#include <winsock2.h>
