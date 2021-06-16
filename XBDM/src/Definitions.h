@@ -1,5 +1,7 @@
 #pragma once
 
+#include "pch.h"
+
 #ifndef _WIN32
 	typedef uint8_t     BYTE;
 	typedef int16_t     SHORT;
