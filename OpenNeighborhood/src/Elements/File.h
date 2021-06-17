@@ -7,11 +7,11 @@
 class File : public Element
 {
 public:
-	File(const XBDM::FileEntry& data);
+	File(const XBDM::File& data);
 
 	virtual void OnClick() override;
 private:
-	XBDM::FileEntry m_Data;
+	XBDM::File m_Data;
 
 	void OpenDirectory();
 };

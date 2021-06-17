@@ -6,12 +6,11 @@ std::string XboxManager::s_CurrentLocation;
 
 bool XboxManager::CreateConsole(const std::string& ipAddress, std::string& consoleName, bool keepConnectionOpen)
 {
-	bool success;
 	s_Console = XBDM::Console(ipAddress);
 
 	if (s_Console.OpenConnection())
 	{
-		consoleName = s_Console.GetConsoleName(&success);
+		consoleName = s_Console.GetName();
 		
 		if (!keepConnectionOpen)
 			s_Console.CloseConnection();

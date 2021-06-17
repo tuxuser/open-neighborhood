@@ -4,7 +4,7 @@
 #include "Xbox/XboxManager.h"
 #include "Events/AppEvent.h"
 
-File::File(const XBDM::FileEntry& data)
+File::File(const XBDM::File& data)
 	: m_Data(data), Element(data.Name, data.IsDirectory ? "directory" : data.IsXEX ? "xex" : "file", "Couldn't access file!") {}
 
 void File::OnClick()
@@ -16,7 +16,16 @@ void File::OnClick()
 void File::OpenDirectory()
 {
 	XBDM::Console xbox = XboxManager::GetConsole();
-	std::vector<XBDM::FileEntry> files = xbox.GetDirectoryContents(XboxManager::GetCurrentLocation() + '\\' + m_Data.Name, &m_Success);
+	std::vector<XBDM::File> files;
+
+	try
+	{
+		files = xbox.GetDirectoryContents(XboxManager::GetCurrentLocation() + '\\' + m_Data.Name);
+	}
+	catch (std::invalid_argument exception)
+	{
+		m_Success = false;
+	}
 
 	if (m_Success)
 	{

@@ -13,7 +13,16 @@ void Drive::OnClick()
 	std::transform(m_Data.Name.begin(), m_Data.Name.end(), m_Data.Name.begin(), [](unsigned char c) { return std::tolower(c); });
 
 	XBDM::Console xbox = XboxManager::GetConsole();
-	std::vector<XBDM::FileEntry> files = xbox.GetDirectoryContents(XboxManager::GetCurrentLocation() + m_Data.Name + ":\\", &m_Success);
+	std::vector<XBDM::File> files;
+
+	try
+	{
+		files = xbox.GetDirectoryContents(XboxManager::GetCurrentLocation() + m_Data.Name + ":\\");
+	}
+	catch (std::invalid_argument exception)
+	{
+		m_Success = false;
+	}
 
 	if (m_Success)
 	{
