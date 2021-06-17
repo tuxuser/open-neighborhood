@@ -1,0 +1,56 @@
+name: Build
+on: [push, pull_request]
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - run: vendor/premake/bin/premake5.exe vs2019
+      - run: msbuild /p:Configuration=${{ matrix.config }}
+      - name: Upload Artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenNeighborhood-windows
+          path: bin\Release-windows\
+
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config: [debug, release]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y xorg-dev
+      - run: ./vendor/premake/bin/premake5 gmake2
+      - run: make config=${{ matrix.config }}
+      - name: Upload Artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenNeighborhood-linux
+          path: bin/Release-linux/
+
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        config: [debug, release]
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./vendor/premake/bin/premake5_macos gmake2
+      - run: make config=${{ matrix.config }}
+      - name: Upload Artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenNeighborhood-macos
+          path: bin/Release-macosx/

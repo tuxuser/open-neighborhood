@@ -6,6 +6,8 @@
 	#endif
 #elif defined(__linux__)
 	#define PLATFORM_LINUX
+#elif defined(__APPLE__)
+	#define PLATFORM_MACOS
 #else
 	#error "Unknown platform!"
 #endif
