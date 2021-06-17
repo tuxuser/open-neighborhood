@@ -55,9 +55,7 @@ project "OpenNeighborhood"
 			"X11",
 			"pthread",
 			"dl",
-			"stdc++fs",
-			"GLEW",
-			"GL"
+			"stdc++fs"
 		}
 
 	filter "system:macosx"
