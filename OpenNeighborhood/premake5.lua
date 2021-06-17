@@ -33,14 +33,15 @@ project "OpenNeighborhood"
 		"GLFW_INCLUDE_NONE"
 	}
 
-	linkgroups "on"
-
 	links {
 		"GLFW",
 		"Glad",
 		"ImGui",
 		"XBDM"
 	}
+
+	filter "system:not macosx"
+		linkgroups "on"
 
 	filter "system:windows"
 		systemversion "latest"
@@ -57,6 +58,13 @@ project "OpenNeighborhood"
 			"stdc++fs",
 			"GLEW",
 			"GL"
+		}
+
+	filter "system:macosx"
+		linkoptions {
+			"-framework Cocoa",
+			"-framework IOKit",
+			"-framework CoreFoundation"
 		}
 
 	filter "configurations:Debug"
