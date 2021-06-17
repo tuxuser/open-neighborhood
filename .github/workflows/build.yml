@@ -8,12 +8,17 @@ jobs:
         config: [Debug, Release]
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
       - run: vendor/premake/bin/premake5.exe vs2019
       - run: msbuild /p:Configuration=${{ matrix.config }}
+      - name: Run tests
+        if: matrix.config == 'Release'
+        run: .\bin\${{ matrix.config }}-windows\tests\tests.exe
       - name: Upload Artifacts
-        if: matrix.config == 'release'
+        if: matrix.config == 'Release'
         uses: actions/upload-artifact@v2
         with:
           name: OpenNeighborhood-windows
@@ -26,12 +31,17 @@ jobs:
         config: [debug, release]
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y xorg-dev
       - run: ./vendor/premake/bin/premake5 gmake2
       - run: make config=${{ matrix.config }}
+      - name: Run tests
+        if: matrix.config == 'release'
+        run: ./bin/Release-linux/tests/tests
       - name: Upload Artifacts
         if: matrix.config == 'release'
         uses: actions/upload-artifact@v2
@@ -46,8 +56,13 @@ jobs:
         config: [debug, release]
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - run: ./vendor/premake/bin/premake5_macos gmake2
       - run: make config=${{ matrix.config }}
+      - name: Run tests
+        if: matrix.config == 'release'
+        run: ./bin/Release-macosx/tests/tests
       - name: Upload Artifacts
         if: matrix.config == 'release'
         uses: actions/upload-artifact@v2
