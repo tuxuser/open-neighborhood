@@ -25,6 +25,10 @@ project "OpenNeighborhood"
 		"%{IncludeDir.Glad}"
 	}
 
+	postbuildcommands {
+		"{COPY} assets %{cfg.targetdir}"
+	}
+
 	defines {
 		"GLFW_INCLUDE_NONE"
 	}
