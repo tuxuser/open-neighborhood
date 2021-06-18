@@ -41,7 +41,7 @@ jobs:
       - run: make config=${{ matrix.config }}
       - name: Run tests
         if: matrix.config == 'release'
-        run: ./bin/Release-linux/tests/tests
+        run: sudo ./bin/Release-linux/tests/tests
       - name: Upload Artifacts
         if: matrix.config == 'release'
         uses: actions/upload-artifact@v2
@@ -62,7 +62,7 @@ jobs:
       - run: make config=${{ matrix.config }}
       - name: Run tests
         if: matrix.config == 'release'
-        run: ./bin/Release-macosx/tests/tests
+        run: sudo ./bin/Release-macosx/tests/tests
       - name: Upload Artifacts
         if: matrix.config == 'release'
         uses: actions/upload-artifact@v2
