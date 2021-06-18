@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <iostream>
 #include "Console.h"
 
 namespace XBDM
@@ -19,18 +20,23 @@ namespace XBDM
 #ifdef _WIN32
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+		{
+			std::cerr << "Failed WSAStartup" << std::endl;
 			return false;
+		}
 #endif
 
 		if (getaddrinfo(m_IpAddress.c_str(), "730", &hints, &addrInfo) != 0)
 		{
+			std::cerr << "Failed client getaddrinfo" << std::endl;
 			CleanupSocket();
 			return false;
 		}
 
-		m_Socket = socket(AF_UNSPEC, SOCK_STREAM, IPPROTO_TCP);
+		m_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_Socket < 0)
 		{
+			std::cerr << "Failed client socket init" << std::endl;
 			CleanupSocket();
 			return false;
 		}
@@ -40,18 +46,23 @@ namespace XBDM
 
 		if (connect(m_Socket, addrInfo->ai_addr, (int)addrInfo->ai_addrlen) == SOCKET_ERROR)
 		{
+			std::cerr << "Failed client connect" << std::endl;
 			CloseSocket();
 			return false;
 		}
 
 		if (m_Socket == INVALID_SOCKET)
 		{
+			std::cerr << "Fail: m_Socket == INVALID_SOCKET" << std::endl;
 			CleanupSocket();
 			return false;
 		}
 
 		if (Receive() != "201- connected\r\n")
+		{
+			std::cerr << "Failed receiving 201- connected response" << std::endl;
 			return false;
+		}
 
 		m_Connected = true;
 		return true;
