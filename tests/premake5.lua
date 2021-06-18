@@ -16,20 +16,29 @@ project "tests"
 		"vendor/googletest/googletest/include"
 	}
 
-	defines {
-		"GLFW_INCLUDE_NONE"
-	}
-
 	links {
 		"XBDM",
 		"gtest"
 	}
 
-	filter "system:linux"
-		linkoptions {"-pthread"}
+	filter "system:not macosx"
+		linkgroups "on"
 
 	filter "system:windows"
 		systemversion "latest"
+		links {"Ws2_32.lib"}
+
+	filter "system:linux"
+		systemversion "latest"
+		links {"pthread"}
+
+	filter "system:macosx"
+		linkoptions {
+			"-framework Cocoa",
+			"-framework IOKit",
+			"-framework CoreFoundation"
+		}
+
 	
     filter "configurations:Debug"
 		runtime "Debug"
